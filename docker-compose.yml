@@ -1,0 +1,17 @@
+services:
+  admin-fe:
+    build: .
+    image: irms-fe-admin
+    container_name: irms-fe-admin
+    labels:
+      - "project=iRMS"
+      - "layer=FE"
+      - "service=admin"
+    ports:
+      - "3002:80"
+    networks:
+      - irms_net
+
+networks:
+  irms_net:
+    external: true
