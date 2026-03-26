@@ -12,22 +12,22 @@
 
 ## 연동 BE API
 
-| 엔드포인트 | 메서드 | 설명 | 권한 |
-|-----------|--------|------|------|
-| `/api/user/register` | POST | 회원 등록 | 공개 |
-| `/api/user/approve` | POST | 가입 승인 | Lead/Admin |
-| `/api/user/users` | GET | 회원 목록 | Lead/Admin |
-| `/api/user/users/:idx` | PUT | 회원 수정 | Lead/Admin |
-| `/api/user/users/:idx` | DELETE | 회원 삭제 | Lead/Admin |
-| `/api/user/reset-password` | POST | 비밀번호 초기화 | Admin |
+| 엔드포인트                 | 메서드 | 설명            | 권한       |
+| -------------------------- | ------ | --------------- | ---------- |
+| `/api/user/register`       | POST   | 회원 등록       | 공개       |
+| `/api/user/approve`        | POST   | 가입 승인       | Lead/Admin |
+| `/api/user/users`          | GET    | 회원 목록       | Lead/Admin |
+| `/api/user/users/:idx`     | PUT    | 회원 수정       | Lead/Admin |
+| `/api/user/users/:idx`     | DELETE | 회원 삭제       | Lead/Admin |
+| `/api/user/reset-password` | POST   | 비밀번호 초기화 | Admin      |
 
 ## 라우트
 
-| 경로 | 페이지 | 설명 |
-|------|--------|------|
-| `/login` | `LoginPage` (common) | 로그인 |
-| `/admin/users` | `UserListPage` | 회원 목록 |
-| `/admin/approval` | `ApprovalPage` | 가입 승인 |
+| 경로              | 페이지               | 설명      |
+| ----------------- | -------------------- | --------- |
+| `/login`          | `LoginPage` (common) | 로그인    |
+| `/admin/users`    | `UserListPage`       | 회원 목록 |
+| `/admin/approval` | `ApprovalPage`       | 가입 승인 |
 
 ## 사전 준비
 

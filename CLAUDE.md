@@ -28,20 +28,20 @@
 
 ## 상세 정책
 
-| 정책 | 경로 | 내용 |
-|------|------|------|
-| 컴포넌트 | `common/docs/components.md` | 공통 UI 컴포넌트 사용법 |
-| 인증 | `common/docs/auth.md` | 토큰 관리, 인증 훅 사용법 |
-| API 클라이언트 | `common/docs/api-client.md` | Axios 인스턴스, 인터셉터 |
-| 상태 관리 | `common/docs/stores.md` | Zustand store 규칙 |
+| 정책           | 경로                        | 내용                      |
+| -------------- | --------------------------- | ------------------------- |
+| 컴포넌트       | `common/docs/components.md` | 공통 UI 컴포넌트 사용법   |
+| 인증           | `common/docs/auth.md`       | 토큰 관리, 인증 훅 사용법 |
+| API 클라이언트 | `common/docs/api-client.md` | Axios 인스턴스, 인터셉터  |
+| 상태 관리      | `common/docs/stores.md`     | Zustand store 규칙        |
 
 ## BE API 대응
 
-| 서비스 함수 | 엔드포인트 | 메서드 | 권한 | BE 대응 |
-|-------------|-----------|--------|------|---------|
-| `register` | `/api/user/register` | POST | 공개 | `service.py → register_user` |
-| `approveUser` | `/api/user/approve` | POST | Lead/Admin | `service.py → approve_user` |
-| `getUsers` | `/api/user/users` | GET | Lead/Admin | `service.py → get_users` |
-| `updateUser` | `/api/user/users/:idx` | PUT | Lead/Admin | `service.py → update_user` |
-| `deleteUser` | `/api/user/users/:idx` | DELETE | Lead/Admin | `service.py → delete_user` |
-| `resetPassword` | `/api/user/reset-password` | POST | Admin | `service.py → reset_password` |
+| 서비스 함수     | 엔드포인트                 | 메서드 | 권한       | BE 대응                       |
+| --------------- | -------------------------- | ------ | ---------- | ----------------------------- |
+| `register`      | `/api/user/register`       | POST   | 공개       | `service.py → register_user`  |
+| `approveUser`   | `/api/user/approve`        | POST   | Lead/Admin | `service.py → approve_user`   |
+| `getUsers`      | `/api/user/users`          | GET    | Lead/Admin | `service.py → get_users`      |
+| `updateUser`    | `/api/user/users/:idx`     | PUT    | Lead/Admin | `service.py → update_user`    |
+| `deleteUser`    | `/api/user/users/:idx`     | DELETE | Lead/Admin | `service.py → delete_user`    |
+| `resetPassword` | `/api/user/reset-password` | POST   | Admin      | `service.py → reset_password` |
