@@ -11,9 +11,10 @@ export default defineConfig({
   },
   server: {
     port: 3002,
+    host: '0.0.0.0',
     proxy: {
       '/api': {
-        target: 'http://localhost:8005',
+        target: 'http://irms-user:8005',
         changeOrigin: true,
       },
     },
