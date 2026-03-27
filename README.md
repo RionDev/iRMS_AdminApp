@@ -39,14 +39,15 @@ git submodule update --init --recursive
 cp .env.example .env
 ```
 
-개발 환경에서는 브라우저가 `localhost:3002`만 보도록 두고, Vite 프록시가
-`/api/auth`는 인증 서버(`8001`), `/api/user`는 유저 서비스(`8005`)로 전달한다.
+개발 중 admin 단독 확인은 `http://localhost:3002/admin/`로, 앱 간 인증 공유 확인은
+루트 gateway인 `http://localhost:3000/admin/`로 접근한다.
+Vite 프록시는 `/api/auth`를 인증 서버(`8001`)로, `/api/user`를 유저 서비스(`8005`)로 전달한다.
 
 ## 실행
 
 ```bash
 npm install
-npm run dev        # http://localhost:3002
+npm run dev        # http://localhost:3002/admin/
 ```
 
 ## 테스트
@@ -66,6 +67,8 @@ npm run preview    # 빌드 결과 미리보기
 ## Docker
 
 ```bash
-docker compose up -d    # 포트 3002
+docker compose up -d    # http://localhost:3002/admin/
 docker compose down
 ```
+
+루트 gateway를 함께 띄운 경우 권장 진입점은 `http://localhost:3000/admin/`다.

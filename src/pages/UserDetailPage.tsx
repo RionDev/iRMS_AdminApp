@@ -5,7 +5,9 @@ import { Input } from '@common/components/Input';
 import { Button } from '@common/components/Button';
 import { useRequireRole } from '@common/hooks/useAuth';
 import { Role } from '@common/types/constants';
+import { theme } from '@common/styles/theme';
 import type { VUser } from '@common/types/auth';
+import { adminNavItems } from '../navigation';
 import { updateUser, deleteUser, resetPassword } from '../services/userService';
 import type { UpdateUserRequest } from '../types/user';
 import { UserForm } from '../components/UserForm';
@@ -55,8 +57,16 @@ export function UserDetailPage({ user, onBack }: UserDetailPageProps) {
   };
 
   return (
-    <Layout title="회원 상세">
-      <div style={{ backgroundColor: '#fff', padding: '24px', borderRadius: '8px', maxWidth: '480px' }}>
+    <Layout title="회원 상세" sideNavItems={adminNavItems}>
+      <div
+        style={{
+          backgroundColor: theme.colors.surface,
+          padding: '24px',
+          borderRadius: theme.radius.md,
+          maxWidth: '480px',
+          boxShadow: theme.shadow.card,
+        }}
+      >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <h2 style={{ marginTop: 0 }}>회원 상세</h2>
           <Button variant="secondary" onClick={onBack}>
@@ -78,8 +88,8 @@ export function UserDetailPage({ user, onBack }: UserDetailPageProps) {
             비밀번호 초기화
           </Button>
         )}
-        {message && <p style={{ color: '#2e7d32', marginTop: '12px' }}>{message}</p>}
-        {error && <p style={{ color: '#d32f2f', marginTop: '12px' }}>{error}</p>}
+        {message && <p style={{ color: theme.colors.success, marginTop: '12px' }}>{message}</p>}
+        {error && <p style={{ color: theme.colors.danger, marginTop: '12px' }}>{error}</p>}
       </div>
 
       <Modal

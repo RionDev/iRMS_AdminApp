@@ -14,8 +14,8 @@ function AdminRoutes() {
 
   return (
     <Routes>
-      <Route path="/users" element={<UserListPage onSelectUser={setSelectedUser} />} />
-      <Route path="/approval" element={<ApprovalPage />} />
+      <Route path="/admin/users" element={<UserListPage onSelectUser={setSelectedUser} />} />
+      <Route path="/admin/approval" element={<ApprovalPage />} />
       <Route path="*" element={<Navigate to="/admin/users" replace />} />
     </Routes>
   );

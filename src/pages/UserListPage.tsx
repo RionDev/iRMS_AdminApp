@@ -1,9 +1,11 @@
 import { useEffect, useCallback } from 'react';
 import { Layout } from '@common/components/Layout';
-import { useAuth, useRequireRole } from '@common/hooks/useAuth';
+import { useRequireRole } from '@common/hooks/useAuth';
 import { useApi } from '@common/hooks/useApi';
 import { Role } from '@common/types/constants';
+import { theme } from '@common/styles/theme';
 import type { VUser } from '@common/types/auth';
+import { adminNavItems } from '../navigation';
 import { getUsers, approveUser } from '../services/userService';
 import { UserTable } from '../components/UserTable';
 
@@ -27,11 +29,18 @@ export function UserListPage({ onSelectUser }: UserListPageProps) {
   };
 
   return (
-    <Layout title="회원 관리">
-      <div style={{ backgroundColor: '#fff', padding: '24px', borderRadius: '8px' }}>
+    <Layout title="회원 관리" sideNavItems={adminNavItems}>
+      <div
+        style={{
+          backgroundColor: theme.colors.surface,
+          padding: '24px',
+          borderRadius: theme.radius.md,
+          boxShadow: theme.shadow.card,
+        }}
+      >
         <h2 style={{ marginTop: 0 }}>회원 목록</h2>
         {loading && <p>로딩 중...</p>}
-        {error && <p style={{ color: '#d32f2f' }}>{error}</p>}
+        {error && <p style={{ color: theme.colors.danger }}>{error}</p>}
         {users && (
           <UserTable users={users} onSelect={onSelectUser} onApprove={handleApprove} />
         )}

@@ -8,7 +8,7 @@ useAuthStore.getState().initialize();
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <BrowserRouter basename={import.meta.env.PROD ? '/admin' : undefined}>
+    <BrowserRouter>
       <App />
     </BrowserRouter>
   </React.StrictMode>,

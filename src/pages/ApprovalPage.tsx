@@ -3,6 +3,8 @@ import { Layout } from '@common/components/Layout';
 import { useRequireRole } from '@common/hooks/useAuth';
 import { useApi } from '@common/hooks/useApi';
 import { Role } from '@common/types/constants';
+import { theme } from '@common/styles/theme';
+import { adminNavItems } from '../navigation';
 import { getUsers, approveUser } from '../services/userService';
 import { UserTable } from '../components/UserTable';
 
@@ -24,13 +26,20 @@ export function ApprovalPage() {
   };
 
   return (
-    <Layout title="가입 승인">
-      <div style={{ backgroundColor: '#fff', padding: '24px', borderRadius: '8px' }}>
+    <Layout title="가입 승인" sideNavItems={adminNavItems}>
+      <div
+        style={{
+          backgroundColor: theme.colors.surface,
+          padding: '24px',
+          borderRadius: theme.radius.md,
+          boxShadow: theme.shadow.card,
+        }}
+      >
         <h2 style={{ marginTop: 0 }}>가입 승인 대기</h2>
         {loading && <p>로딩 중...</p>}
-        {error && <p style={{ color: '#d32f2f' }}>{error}</p>}
+        {error && <p style={{ color: theme.colors.danger }}>{error}</p>}
         {pendingUsers.length === 0 && !loading && (
-          <p style={{ color: '#666' }}>승인 대기 중인 사용자가 없습니다.</p>
+          <p style={{ color: theme.colors.textMuted }}>승인 대기 중인 사용자가 없습니다.</p>
         )}
         {pendingUsers.length > 0 && (
           <UserTable users={pendingUsers} onSelect={() => {}} onApprove={handleApprove} />

@@ -1,5 +1,6 @@
 import type { VUser } from '@common/types/auth';
 import { Button } from '@common/components/Button';
+import { theme } from '@common/styles/theme';
 
 interface UserTableProps {
   users: VUser[];
@@ -9,9 +10,9 @@ interface UserTableProps {
 
 export function UserTable({ users, onSelect, onApprove }: UserTableProps) {
   return (
-    <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+    <table style={{ width: '100%', borderCollapse: 'collapse', color: theme.colors.text }}>
       <thead>
-        <tr style={{ borderBottom: '2px solid #e0e0e0', textAlign: 'left' }}>
+        <tr style={{ borderBottom: `2px solid ${theme.colors.surfaceMuted}`, textAlign: 'left' }}>
           <th style={{ padding: '8px' }}>이름</th>
           <th style={{ padding: '8px' }}>아이디</th>
           <th style={{ padding: '8px' }}>팀</th>
@@ -23,7 +24,7 @@ export function UserTable({ users, onSelect, onApprove }: UserTableProps) {
       </thead>
       <tbody>
         {users.map((user) => (
-          <tr key={user.idx} style={{ borderBottom: '1px solid #e0e0e0' }}>
+          <tr key={user.idx} style={{ borderBottom: `1px solid ${theme.colors.surfaceMuted}` }}>
             <td style={{ padding: '8px' }}>{user.name}</td>
             <td style={{ padding: '8px' }}>{user.id}</td>
             <td style={{ padding: '8px' }}>{user.team_name}</td>
@@ -31,7 +32,7 @@ export function UserTable({ users, onSelect, onApprove }: UserTableProps) {
             <td style={{ padding: '8px' }}>
               <ApprovalBadge status={user.status_name} />
             </td>
-            <td style={{ padding: '8px', color: '#666', fontSize: '13px' }}>
+            <td style={{ padding: '8px', color: theme.colors.textMuted, fontSize: '13px' }}>
               {user.last_at ?? '—'}
             </td>
             <td style={{ padding: '8px', display: 'flex', gap: '4px' }}>
@@ -50,7 +51,12 @@ export function UserTable({ users, onSelect, onApprove }: UserTableProps) {
 }
 
 function ApprovalBadge({ status }: { status: string }) {
-  const color = status === '활성' ? '#2e7d32' : status === '대기' ? '#ed6c02' : '#666';
+  const color =
+    status === '활성'
+      ? theme.colors.success
+      : status === '대기'
+        ? theme.colors.warning
+        : theme.colors.textMuted;
   return (
     <span
       style={{
