@@ -39,6 +39,9 @@ git submodule update --init --recursive
 cp .env.example .env
 ```
 
+개발 환경에서는 브라우저가 `localhost:3002`만 보도록 두고, Vite 프록시가
+`/api/auth`는 인증 서버(`8001`), `/api/user`는 유저 서비스(`8005`)로 전달한다.
+
 ## 실행
 
 ```bash

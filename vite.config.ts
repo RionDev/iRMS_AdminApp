@@ -14,7 +14,11 @@ export default defineConfig(({ mode }) => ({
     port: 3002,
     host: '0.0.0.0',
     proxy: {
-      '/api': {
+      '/api/auth': {
+        target: 'http://irms-auth:8001',
+        changeOrigin: true,
+      },
+      '/api/user': {
         target: 'http://irms-user:8005',
         changeOrigin: true,
       },
