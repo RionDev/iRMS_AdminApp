@@ -79,7 +79,8 @@ function formatRoleName(role: BackendUser['role']): string {
 
 function formatStatusName(status: BackendUser['status']): string {
   if (typeof status === 'string') return status;
-  if (status === 1) return '활성';
-  if (status === 0) return '대기';
+  if (status === 1) return '승인대기';
+  if (status === 2) return '활성';
+  if (status === 3) return '비활성';
   return '-';
 }

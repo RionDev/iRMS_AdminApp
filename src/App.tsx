@@ -1,30 +1,26 @@
-import { Routes, Route, Navigate } from "react-router-dom";
-import { LoginPage } from "@common/pages/LoginPage";
-import { useAuthStore } from "@common/stores/authStore";
-import { adminRoutes } from "./routes";
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { LoginPage } from '@common/pages/LoginPage';
+import { SignupPage } from '@common/pages/SignupPage';
+import { useAuthStore } from '@common/stores/authStore';
+import { adminRoutes } from './routes';
 
-function AdminEntryRedirect() {
-    const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
-    return (
-        <Navigate
-            to={
-                isAuthenticated
-                    ? "/admin/users"
-                    : "/login?redirect=/admin/users"
-            }
-            replace
-        />
-    );
+function RequireAuth({ children }: { children: React.ReactElement }) {
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  if (!isAuthenticated) {
+    window.location.href = '/admin/login?redirect=' + encodeURIComponent(window.location.pathname);
+    return null;
+  }
+  return children;
 }
 
 export function App() {
-    return (
-        <Routes>
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/admin/login" element={<LoginPage />} />
-            <Route path="/admin" element={<AdminEntryRedirect />} />
-            <Route path="/admin/*" element={adminRoutes} />
-            <Route path="*" element={<Navigate to="/admin/users" replace />} />
-        </Routes>
-    );
+  return (
+    <Routes>
+      <Route path="/login" element={<LoginPage signupUrl="/admin/signup" defaultRedirect="/admin/users" />} />
+      <Route path="/signup" element={<SignupPage loginUrl="/admin/login" />} />
+      <Route path="/users" element={<RequireAuth>{adminRoutes.userList}</RequireAuth>} />
+      <Route path="/approval" element={<RequireAuth>{adminRoutes.approval}</RequireAuth>} />
+      <Route path="*" element={<Navigate to="/users" replace />} />
+    </Routes>
+  );
 }

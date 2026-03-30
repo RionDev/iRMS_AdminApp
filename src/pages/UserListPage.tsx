@@ -18,6 +18,7 @@ export function UserListPage({ onSelectUser }: UserListPageProps) {
 
   const fetcher = useCallback(() => getUsers(), []);
   const { data: users, loading, error, execute } = useApi(fetcher);
+  const visibleUsers = users?.filter((user) => user.status_name !== '승인대기') ?? [];
 
   useEffect(() => {
     execute();
@@ -42,7 +43,7 @@ export function UserListPage({ onSelectUser }: UserListPageProps) {
         {loading && <p>로딩 중...</p>}
         {error && <p style={{ color: theme.colors.danger }}>{error}</p>}
         {users && (
-          <UserTable users={users} onSelect={onSelectUser} onApprove={handleApprove} />
+          <UserTable users={visibleUsers} onSelect={onSelectUser} onApprove={handleApprove} />
         )}
       </div>
     </Layout>

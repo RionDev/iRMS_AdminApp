@@ -18,7 +18,7 @@ export function ApprovalPage() {
     execute();
   }, [execute]);
 
-  const pendingUsers = users?.filter((u) => u.status_name === '대기') ?? [];
+  const pendingUsers = users?.filter((u) => u.status_name === '승인대기') ?? [];
 
   const handleApprove = async (userIdx: number) => {
     await approveUser({ user_idx: userIdx });

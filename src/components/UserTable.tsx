@@ -39,7 +39,7 @@ export function UserTable({ users, onSelect, onApprove }: UserTableProps) {
               <Button variant="secondary" onClick={() => onSelect(user)}>
                 상세
               </Button>
-              {onApprove && user.status_name === '대기' && (
+              {onApprove && user.status_name === '승인대기' && (
                 <Button onClick={() => onApprove(user.idx)}>승인</Button>
               )}
             </td>
@@ -54,7 +54,7 @@ function ApprovalBadge({ status }: { status: string }) {
   const color =
     status === '활성'
       ? theme.colors.success
-      : status === '대기'
+      : status === '승인대기'
         ? theme.colors.warning
         : theme.colors.textMuted;
   return (
