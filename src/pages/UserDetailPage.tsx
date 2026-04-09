@@ -20,18 +20,16 @@ interface UserDetailPageProps {
 export function UserDetailPage({ user, onBack }: UserDetailPageProps) {
   const currentUser = useRequireRole(Role.LEAD, Role.ADMIN);
   const [message, setMessage] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
   const [resetModalOpen, setResetModalOpen] = useState(false);
   const [newPassword, setNewPassword] = useState('');
 
   const handleSubmit = async (idx: number, data: UpdateUserRequest) => {
     setMessage(null);
-    setError(null);
     try {
       await updateUser(idx, data);
       setMessage('수정되었습니다.');
     } catch {
-      setError('수정에 실패했습니다.');
+      // interceptor가 alert 처리
     }
   };
 
@@ -41,7 +39,7 @@ export function UserDetailPage({ user, onBack }: UserDetailPageProps) {
       await deleteUser(idx);
       onBack();
     } catch {
-      setError('삭제에 실패했습니다.');
+      // interceptor가 alert 처리
     }
   };
 
@@ -52,7 +50,7 @@ export function UserDetailPage({ user, onBack }: UserDetailPageProps) {
       setNewPassword('');
       setMessage('비밀번호가 초기화되었습니다.');
     } catch {
-      setError('비밀번호 초기화에 실패했습니다.');
+      // interceptor가 alert 처리
     }
   };
 
@@ -89,7 +87,6 @@ export function UserDetailPage({ user, onBack }: UserDetailPageProps) {
           </Button>
         )}
         {message && <p style={{ color: theme.colors.success, marginTop: '12px' }}>{message}</p>}
-        {error && <p style={{ color: theme.colors.danger, marginTop: '12px' }}>{error}</p>}
       </div>
 
       <Modal

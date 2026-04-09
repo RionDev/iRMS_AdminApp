@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { LoginPage } from '@common/pages/LoginPage';
 import { SignupPage } from '@common/pages/SignupPage';
+
 import { useAuthStore } from '@common/stores/authStore';
 import { adminRoutes } from './routes';
 

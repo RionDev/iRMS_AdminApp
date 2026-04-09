@@ -12,7 +12,7 @@ export function ApprovalPage() {
   useRequireRole(Role.LEAD, Role.ADMIN);
 
   const fetcher = useCallback(() => getUsers(), []);
-  const { data: users, loading, error, execute } = useApi(fetcher);
+  const { data: users, loading, execute } = useApi(fetcher);
 
   useEffect(() => {
     execute();
@@ -37,7 +37,6 @@ export function ApprovalPage() {
       >
         <h2 style={{ marginTop: 0 }}>가입 승인 대기</h2>
         {loading && <p>로딩 중...</p>}
-        {error && <p style={{ color: theme.colors.danger }}>{error}</p>}
         {pendingUsers.length === 0 && !loading && (
           <p style={{ color: theme.colors.textMuted }}>승인 대기 중인 사용자가 없습니다.</p>
         )}
