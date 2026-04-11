@@ -55,7 +55,7 @@ export function UserDetailPage({ user, onBack }: UserDetailPageProps) {
   };
 
   return (
-    <Layout title="회원 상세" sideNavItems={adminNavItems}>
+    <Layout title="회원 상세" sideNavItems={adminNavItems} version={__APP_VERSION__}>
       <div
         style={{
           backgroundColor: theme.colors.surface,

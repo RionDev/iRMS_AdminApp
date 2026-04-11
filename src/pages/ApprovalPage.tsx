@@ -26,7 +26,7 @@ export function ApprovalPage() {
   };
 
   return (
-    <Layout title="가입 승인" sideNavItems={adminNavItems}>
+    <Layout title="가입 승인" sideNavItems={adminNavItems} version={__APP_VERSION__}>
       <div
         style={{
           backgroundColor: theme.colors.surface,

@@ -30,7 +30,7 @@ export function UserListPage({ onSelectUser }: UserListPageProps) {
   };
 
   return (
-    <Layout title="회원 관리" sideNavItems={adminNavItems}>
+    <Layout title="회원 관리" sideNavItems={adminNavItems} version={__APP_VERSION__}>
       <div
         style={{
           backgroundColor: theme.colors.surface,
