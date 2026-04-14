@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import type { FormEvent } from 'react';
 import { Input } from '@common/components/Input';
 import { Button } from '@common/components/Button';
-import { Role, Team } from '@common/types/constants';
 import { theme } from '@common/styles/theme';
 import type { VUser } from '@common/types/auth';
 import type { UpdateUserRequest } from '../types/user';
@@ -16,8 +15,8 @@ interface UserFormProps {
 
 export function UserForm({ user, onSubmit, onDelete, onCancel }: UserFormProps) {
   const [name, setName] = useState(user.name);
-  const [team, setTeam] = useState<number>(Team.ENGINE);
-  const [role, setRole] = useState<number>(Role.MEMBER);
+  const [team, setTeam] = useState<number>(1);
+  const [role, setRole] = useState<number>(3);
 
   useEffect(() => {
     setName(user.name);
@@ -48,8 +47,8 @@ export function UserForm({ user, onSubmit, onDelete, onCancel }: UserFormProps) 
             color: theme.colors.text,
           }}
         >
-          <option value={Team.ENGINE}>엔진</option>
-          <option value={Team.ANALYST}>분석</option>
+          <option value={1}>Engine</option>
+          <option value={2}>Analyst</option>
         </select>
       </div>
       <div style={{ marginBottom: '12px' }}>
@@ -66,10 +65,10 @@ export function UserForm({ user, onSubmit, onDelete, onCancel }: UserFormProps) 
             color: theme.colors.text,
           }}
         >
-          <option value={Role.MEMBER}>멤버</option>
-          <option value={Role.LEAD}>리드</option>
-          <option value={Role.ADMIN}>관리자</option>
-          <option value={Role.GUEST}>게스트</option>
+          <option value={3}>Member</option>
+          <option value={2}>Lead</option>
+          <option value={1}>Admin</option>
+          <option value={4}>Guest</option>
         </select>
       </div>
       <div style={{ display: 'flex', gap: '8px' }}>

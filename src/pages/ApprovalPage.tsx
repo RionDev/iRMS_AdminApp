@@ -1,15 +1,14 @@
 import { useEffect, useCallback } from 'react';
 import { Layout } from '@common/components/Layout';
-import { useRequireRole } from '@common/hooks/useAuth';
+import { useAppAccess } from '@common/hooks/useAuth';
 import { useApi } from '@common/hooks/useApi';
-import { Role } from '@common/types/constants';
 import { theme } from '@common/styles/theme';
 import { adminNavItems } from '../navigation';
 import { getUsers, approveUser } from '../services/userService';
 import { UserTable } from '../components/UserTable';
 
 export function ApprovalPage() {
-  useRequireRole(Role.LEAD, Role.ADMIN);
+  useAppAccess('/admin');
 
   const fetcher = useCallback(() => getUsers(), []);
   const { data: users, loading, execute } = useApi(fetcher);
@@ -18,7 +17,7 @@ export function ApprovalPage() {
     execute();
   }, [execute]);
 
-  const pendingUsers = users?.filter((u) => u.status_name === '승인대기') ?? [];
+  const pendingUsers = users?.filter((u) => u.status_name === 'PENDING') ?? [];
 
   const handleApprove = async (userIdx: number) => {
     await approveUser({ user_idx: userIdx });

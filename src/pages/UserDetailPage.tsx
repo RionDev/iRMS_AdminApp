@@ -3,8 +3,7 @@ import { Layout } from '@common/components/Layout';
 import { Modal } from '@common/components/Modal';
 import { Input } from '@common/components/Input';
 import { Button } from '@common/components/Button';
-import { useRequireRole } from '@common/hooks/useAuth';
-import { Role } from '@common/types/constants';
+import { useAppAccess } from '@common/hooks/useAuth';
 import { theme } from '@common/styles/theme';
 import type { VUser } from '@common/types/auth';
 import { adminNavItems } from '../navigation';
@@ -18,7 +17,7 @@ interface UserDetailPageProps {
 }
 
 export function UserDetailPage({ user, onBack }: UserDetailPageProps) {
-  const currentUser = useRequireRole(Role.LEAD, Role.ADMIN);
+  const currentUser = useAppAccess('/admin');
   const [message, setMessage] = useState<string | null>(null);
   const [resetModalOpen, setResetModalOpen] = useState(false);
   const [newPassword, setNewPassword] = useState('');
@@ -77,7 +76,7 @@ export function UserDetailPage({ user, onBack }: UserDetailPageProps) {
           onDelete={handleDelete}
           onCancel={onBack}
         />
-        {currentUser && currentUser.role === Role.ADMIN && (
+        {currentUser && currentUser.role === 1 && (
           <Button
             variant="secondary"
             onClick={() => setResetModalOpen(true)}

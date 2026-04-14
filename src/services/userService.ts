@@ -63,24 +63,24 @@ function mapUser(user: BackendUser): VUser {
 
 function formatTeamName(team: BackendUser['team']): string {
   if (typeof team === 'string') return team;
-  if (team === 1) return '엔진';
-  if (team === 2) return '분석';
+  if (team === 1) return 'ENGINE';
+  if (team === 2) return 'ANALYST';
   return '-';
 }
 
 function formatRoleName(role: BackendUser['role']): string {
   if (typeof role === 'string') return role;
-  if (role === 1) return 'Member';
-  if (role === 2) return 'Lead';
-  if (role === 3) return 'Admin';
-  if (role === 4) return 'Guest';
+  if (role === 1) return 'ADMIN';
+  if (role === 2) return 'LEAD';
+  if (role === 3) return 'MEMBER';
+  if (role === 4) return 'GUEST';
   return '-';
 }
 
 function formatStatusName(status: BackendUser['status']): string {
   if (typeof status === 'string') return status;
-  if (status === 1) return '승인대기';
-  if (status === 2) return '활성';
-  if (status === 3) return '비활성';
+  if (status === 1) return 'PENDING';
+  if (status === 2) return 'ACTIVE';
+  if (status === 3) return 'INACTIVE';
   return '-';
 }

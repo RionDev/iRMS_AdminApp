@@ -1,8 +1,7 @@
 import { useEffect, useCallback } from 'react';
 import { Layout } from '@common/components/Layout';
-import { useRequireRole } from '@common/hooks/useAuth';
+import { useAppAccess } from '@common/hooks/useAuth';
 import { useApi } from '@common/hooks/useApi';
-import { Role } from '@common/types/constants';
 import { theme } from '@common/styles/theme';
 import type { VUser } from '@common/types/auth';
 import { adminNavItems } from '../navigation';
@@ -14,11 +13,11 @@ interface UserListPageProps {
 }
 
 export function UserListPage({ onSelectUser }: UserListPageProps) {
-  useRequireRole(Role.LEAD, Role.ADMIN);
+  useAppAccess('/admin');
 
   const fetcher = useCallback(() => getUsers(), []);
   const { data: users, loading, execute } = useApi(fetcher);
-  const visibleUsers = users?.filter((user) => user.status_name !== '승인대기') ?? [];
+  const visibleUsers = users?.filter((user) => user.status_name !== 'PENDING') ?? [];
 
   useEffect(() => {
     execute();
