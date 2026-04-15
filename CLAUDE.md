@@ -20,7 +20,7 @@
 
 ## 고유 규칙
 
-- 모든 페이지에 `useRequireRole(Role.LEAD, Role.ADMIN)` 적용
+- 모든 페이지에 `useAppAccess("/admin")` 적용 — `apps` 테이블의 `/admin` 레코드 `min_role` 기준으로 접근 제어
 - BE `user-service` (포트 8005) 엔드포인트만 대응
 - 독립 실행 시 Vite dev server 포트 3002 사용
 
