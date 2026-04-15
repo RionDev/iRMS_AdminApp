@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { Layout } from '@common/components/Layout';
+import { AppLayout } from '@common/components/AppLayout';
 import { Modal } from '@common/components/Modal';
 import { Input } from '@common/components/Input';
 import { Button } from '@common/components/Button';
 import { useAppAccess } from '@common/hooks/useAuth';
-import { theme } from '@common/styles/theme';
+import { useThemeStore } from '@common/stores/themeStore';
 import type { VUser } from '@common/types/auth';
 import { adminNavItems } from '../navigation';
 import { updateUser, deleteUser, resetPassword } from '../services/userService';
@@ -18,6 +18,7 @@ interface UserDetailPageProps {
 
 export function UserDetailPage({ user, onBack }: UserDetailPageProps) {
   const currentUser = useAppAccess('/admin');
+  const { theme } = useThemeStore();
   const [message, setMessage] = useState<string | null>(null);
   const [resetModalOpen, setResetModalOpen] = useState(false);
   const [newPassword, setNewPassword] = useState('');
@@ -54,7 +55,7 @@ export function UserDetailPage({ user, onBack }: UserDetailPageProps) {
   };
 
   return (
-    <Layout title="회원 상세" sideNavItems={adminNavItems} version={__APP_VERSION__}>
+    <AppLayout title="회원 상세" appName="ADMIN" sidebarItems={adminNavItems} version={__APP_VERSION__}>
       <div
         style={{
           backgroundColor: theme.colors.surface,
@@ -109,6 +110,6 @@ export function UserDetailPage({ user, onBack }: UserDetailPageProps) {
           </Button>
         </div>
       </Modal>
-    </Layout>
+    </AppLayout>
   );
 }

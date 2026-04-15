@@ -1,14 +1,15 @@
 import { useEffect, useCallback } from 'react';
-import { Layout } from '@common/components/Layout';
+import { AppLayout } from '@common/components/AppLayout';
 import { useAppAccess } from '@common/hooks/useAuth';
 import { useApi } from '@common/hooks/useApi';
-import { theme } from '@common/styles/theme';
+import { useThemeStore } from '@common/stores/themeStore';
 import { adminNavItems } from '../navigation';
 import { getUsers, approveUser } from '../services/userService';
 import { UserTable } from '../components/UserTable';
 
 export function ApprovalPage() {
   useAppAccess('/admin');
+  const { theme } = useThemeStore();
 
   const fetcher = useCallback(() => getUsers(), []);
   const { data: users, loading, execute } = useApi(fetcher);
@@ -25,7 +26,8 @@ export function ApprovalPage() {
   };
 
   return (
-    <Layout title="가입 승인" sideNavItems={adminNavItems} version={__APP_VERSION__}>
+    <AppLayout title="가입 승인" appName="ADMIN" sidebarItems={adminNavItems} version={__APP_VERSION__}>
+      <h2 style={{ marginTop: 0, marginBottom: '16px' }}>가입 승인 대기</h2>
       <div
         style={{
           backgroundColor: theme.colors.surface,
@@ -34,7 +36,6 @@ export function ApprovalPage() {
           boxShadow: theme.shadow.card,
         }}
       >
-        <h2 style={{ marginTop: 0 }}>가입 승인 대기</h2>
         {loading && <p>로딩 중...</p>}
         {pendingUsers.length === 0 && !loading && (
           <p style={{ color: theme.colors.textMuted }}>승인 대기 중인 사용자가 없습니다.</p>
@@ -43,6 +44,6 @@ export function ApprovalPage() {
           <UserTable users={pendingUsers} onSelect={() => {}} onApprove={handleApprove} />
         )}
       </div>
-    </Layout>
+    </AppLayout>
   );
 }

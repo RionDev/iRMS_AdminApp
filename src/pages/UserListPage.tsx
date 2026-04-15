@@ -1,8 +1,8 @@
 import { useEffect, useCallback } from 'react';
-import { Layout } from '@common/components/Layout';
+import { AppLayout } from '@common/components/AppLayout';
 import { useAppAccess } from '@common/hooks/useAuth';
 import { useApi } from '@common/hooks/useApi';
-import { theme } from '@common/styles/theme';
+import { useThemeStore } from '@common/stores/themeStore';
 import type { VUser } from '@common/types/auth';
 import { adminNavItems } from '../navigation';
 import { getUsers, approveUser } from '../services/userService';
@@ -14,6 +14,7 @@ interface UserListPageProps {
 
 export function UserListPage({ onSelectUser }: UserListPageProps) {
   useAppAccess('/admin');
+  const { theme } = useThemeStore();
 
   const fetcher = useCallback(() => getUsers(), []);
   const { data: users, loading, execute } = useApi(fetcher);
@@ -29,7 +30,8 @@ export function UserListPage({ onSelectUser }: UserListPageProps) {
   };
 
   return (
-    <Layout title="회원 관리" sideNavItems={adminNavItems} version={__APP_VERSION__}>
+    <AppLayout title="회원 목록" appName="ADMIN" sidebarItems={adminNavItems} version={__APP_VERSION__}>
+      <h2 style={{ marginTop: 0, marginBottom: '16px' }}>회원 목록</h2>
       <div
         style={{
           backgroundColor: theme.colors.surface,
@@ -38,12 +40,11 @@ export function UserListPage({ onSelectUser }: UserListPageProps) {
           boxShadow: theme.shadow.card,
         }}
       >
-        <h2 style={{ marginTop: 0 }}>회원 목록</h2>
         {loading && <p>로딩 중...</p>}
         {users && (
           <UserTable users={visibleUsers} onSelect={onSelectUser} onApprove={handleApprove} />
         )}
       </div>
-    </Layout>
+    </AppLayout>
   );
 }
