@@ -27,7 +27,6 @@ export function ApprovalPage() {
 
   return (
     <AppLayout title="가입 승인" appName="ADMIN" sidebarItems={adminNavItems} version={__APP_VERSION__}>
-      <h2 style={{ marginTop: 0, marginBottom: '16px' }}>가입 승인 대기</h2>
       <div
         style={{
           backgroundColor: theme.colors.surface,

@@ -66,8 +66,7 @@ export function UserDetailPage({ user, onBack }: UserDetailPageProps) {
           boxShadow: theme.shadow.card,
         }}
       >
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h2 style={{ marginTop: 0 }}>회원 상세</h2>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
           <Button variant="secondary" onClick={onBack}>
             목록으로
           </Button>

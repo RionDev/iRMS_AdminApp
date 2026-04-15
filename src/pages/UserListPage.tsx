@@ -31,7 +31,6 @@ export function UserListPage({ onSelectUser }: UserListPageProps) {
 
   return (
     <AppLayout title="회원 목록" appName="ADMIN" sidebarItems={adminNavItems} version={__APP_VERSION__}>
-      <h2 style={{ marginTop: 0, marginBottom: '16px' }}>회원 목록</h2>
       <div
         style={{
           backgroundColor: theme.colors.surface,
