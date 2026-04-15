@@ -18,7 +18,7 @@ export function ApprovalPage() {
     execute();
   }, [execute]);
 
-  const pendingUsers = users?.filter((u) => u.status_name === "PENDING") ?? [];
+  const pendingUsers = users?.filter((u) => u.status === "PENDING") ?? [];
 
   const handleApprove = async (userIdx: number) => {
     await approveUser({ user_idx: userIdx });

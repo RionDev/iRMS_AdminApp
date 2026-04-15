@@ -19,7 +19,7 @@ export function UserListPage({ onSelectUser }: UserListPageProps) {
   const fetcher = useCallback(() => getUsers(), []);
   const { data: users, loading, execute } = useApi(fetcher);
   const visibleUsers =
-    users?.filter((user) => user.status_name !== "PENDING") ?? [];
+    users?.filter((user) => user.status !== "PENDING") ?? [];
 
   useEffect(() => {
     execute();

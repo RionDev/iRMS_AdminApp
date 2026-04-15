@@ -1,8 +1,11 @@
+import type { RoleType } from '@common/types/constants';
+
 export interface RegisterRequest {
   id: string;
   password: string;
   name: string;
-  team: number;
+  role: RoleType;
+  team: number | null;
 }
 
 export interface ApproveRequest {
@@ -12,7 +15,7 @@ export interface ApproveRequest {
 export interface UpdateUserRequest {
   name?: string;
   team?: number;
-  role?: number;
+  role?: RoleType;
   status?: number;
 }
 

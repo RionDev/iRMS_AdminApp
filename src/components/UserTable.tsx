@@ -1,6 +1,7 @@
 import type { VUser } from '@common/types/auth';
 import { Button } from '@common/components/Button';
-import { theme } from '@common/styles/theme';
+import { useThemeStore } from '@common/stores/themeStore';
+import { ROLE_LABEL } from '@common/types/constants';
 
 interface UserTableProps {
   users: VUser[];
@@ -8,7 +9,14 @@ interface UserTableProps {
   onApprove?: (userIdx: number) => void;
 }
 
+const STATUS_LABEL: Record<string, string> = {
+  PENDING: '승인대기',
+  ACTIVE: '활성',
+  INACTIVE: '비활성',
+};
+
 export function UserTable({ users, onSelect, onApprove }: UserTableProps) {
+  const { theme } = useThemeStore();
   return (
     <table style={{ width: '100%', borderCollapse: 'collapse', color: theme.colors.text }}>
       <thead>
@@ -27,10 +35,10 @@ export function UserTable({ users, onSelect, onApprove }: UserTableProps) {
           <tr key={user.idx} style={{ borderBottom: `1px solid ${theme.colors.surfaceMuted}` }}>
             <td style={{ padding: '8px' }}>{user.name}</td>
             <td style={{ padding: '8px' }}>{user.id}</td>
-            <td style={{ padding: '8px' }}>{user.team_name}</td>
-            <td style={{ padding: '8px' }}>{user.role_name}</td>
+            <td style={{ padding: '8px' }}>{user.team ?? '—'}</td>
+            <td style={{ padding: '8px' }}>{ROLE_LABEL[user.role] ?? user.role}</td>
             <td style={{ padding: '8px' }}>
-              <ApprovalBadge status={user.status_name} />
+              <ApprovalBadge status={user.status} />
             </td>
             <td style={{ padding: '8px', color: theme.colors.textMuted, fontSize: '13px' }}>
               {user.last_at ?? '—'}
@@ -39,7 +47,7 @@ export function UserTable({ users, onSelect, onApprove }: UserTableProps) {
               <Button variant="secondary" onClick={() => onSelect(user)}>
                 상세
               </Button>
-              {onApprove && user.status_name === '승인대기' && (
+              {onApprove && user.status === 'PENDING' && (
                 <Button onClick={() => onApprove(user.idx)}>승인</Button>
               )}
             </td>
@@ -51,10 +59,11 @@ export function UserTable({ users, onSelect, onApprove }: UserTableProps) {
 }
 
 function ApprovalBadge({ status }: { status: string }) {
+  const { theme } = useThemeStore();
   const color =
-    status === '활성'
+    status === 'ACTIVE'
       ? theme.colors.success
-      : status === '승인대기'
+      : status === 'PENDING'
         ? theme.colors.warning
         : theme.colors.textMuted;
   return (
@@ -65,7 +74,7 @@ function ApprovalBadge({ status }: { status: string }) {
         fontSize: '13px',
       }}
     >
-      {status}
+      {STATUS_LABEL[status] ?? status}
     </span>
   );
 }

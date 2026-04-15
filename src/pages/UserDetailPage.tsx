@@ -6,6 +6,7 @@ import { Modal } from "@common/components/Modal";
 import { useAppAccess } from "@common/hooks/useAuth";
 import { useThemeStore } from "@common/stores/themeStore";
 import type { VUser } from "@common/types/auth";
+import { Role } from "@common/types/constants";
 import { useState } from "react";
 import { UserForm } from "../components/UserForm";
 import { adminNavItems } from "../navigation";
@@ -97,7 +98,7 @@ export function UserDetailPage({ user, onBack }: UserDetailPageProps) {
           onDelete={handleDelete}
           onCancel={onBack}
         />
-        {currentUser && currentUser.role === 1 && (
+        {currentUser && currentUser.role === Role.ADMIN && (
           <Button
             variant="secondary"
             onClick={() => setResetModalOpen(true)}
