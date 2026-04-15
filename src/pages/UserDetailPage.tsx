@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { AppLayout } from '@common/components/AppLayout';
+import { Avatar } from '@common/components/Avatar';
 import { Modal } from '@common/components/Modal';
 import { Input } from '@common/components/Input';
 import { Button } from '@common/components/Button';
@@ -70,6 +71,15 @@ export function UserDetailPage({ user, onBack }: UserDetailPageProps) {
           <Button variant="secondary" onClick={onBack}>
             목록으로
           </Button>
+        </div>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            padding: '8px 0 20px',
+          }}
+        >
+          <Avatar name={user.name} size={80} />
         </div>
         <UserForm
           user={user}
