@@ -4,7 +4,6 @@ import type {
   RegisterRequest,
   ApproveRequest,
   UpdateUserRequest,
-  ResetPasswordRequest,
 } from '../types/user';
 
 export async function register(data: RegisterRequest): Promise<void> {
@@ -26,8 +25,4 @@ export async function updateUser(idx: number, data: UpdateUserRequest): Promise<
 
 export async function deleteUser(idx: number): Promise<void> {
   await apiClient.delete(`/api/user/users/${idx}`);
-}
-
-export async function resetPassword(data: ResetPasswordRequest): Promise<void> {
-  await apiClient.post('/api/user/reset-password', data);
 }
