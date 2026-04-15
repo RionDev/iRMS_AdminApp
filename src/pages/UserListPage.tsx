@@ -1,24 +1,25 @@
-import { useEffect, useCallback } from 'react';
-import { AppLayout } from '@common/components/AppLayout';
-import { useAppAccess } from '@common/hooks/useAuth';
-import { useApi } from '@common/hooks/useApi';
-import { useThemeStore } from '@common/stores/themeStore';
-import type { VUser } from '@common/types/auth';
-import { adminNavItems } from '../navigation';
-import { getUsers, approveUser } from '../services/userService';
-import { UserTable } from '../components/UserTable';
+import { AppLayout } from "@common/components/AppLayout";
+import { useApi } from "@common/hooks/useApi";
+import { useAppAccess } from "@common/hooks/useAuth";
+import { useThemeStore } from "@common/stores/themeStore";
+import type { VUser } from "@common/types/auth";
+import { useCallback, useEffect } from "react";
+import { UserTable } from "../components/UserTable";
+import { adminNavItems } from "../navigation";
+import { approveUser, getUsers } from "../services/userService";
 
 interface UserListPageProps {
   onSelectUser: (user: VUser) => void;
 }
 
 export function UserListPage({ onSelectUser }: UserListPageProps) {
-  useAppAccess('/admin');
+  useAppAccess("/admin");
   const { theme } = useThemeStore();
 
   const fetcher = useCallback(() => getUsers(), []);
   const { data: users, loading, execute } = useApi(fetcher);
-  const visibleUsers = users?.filter((user) => user.status_name !== 'PENDING') ?? [];
+  const visibleUsers =
+    users?.filter((user) => user.status_name !== "PENDING") ?? [];
 
   useEffect(() => {
     execute();
@@ -30,18 +31,27 @@ export function UserListPage({ onSelectUser }: UserListPageProps) {
   };
 
   return (
-    <AppLayout title="회원 목록" appName="ADMIN" sidebarItems={adminNavItems} version={__APP_VERSION__}>
+    <AppLayout
+      title="회원 목록"
+      appName="관리자 설정"
+      sidebarItems={adminNavItems}
+      version={__APP_VERSION__}
+    >
       <div
         style={{
           backgroundColor: theme.colors.surface,
-          padding: '24px',
+          padding: "24px",
           borderRadius: theme.radius.md,
           boxShadow: theme.shadow.card,
         }}
       >
         {loading && <p>로딩 중...</p>}
         {users && (
-          <UserTable users={visibleUsers} onSelect={onSelectUser} onApprove={handleApprove} />
+          <UserTable
+            users={visibleUsers}
+            onSelect={onSelectUser}
+            onApprove={handleApprove}
+          />
         )}
       </div>
     </AppLayout>

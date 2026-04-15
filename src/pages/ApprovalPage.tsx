@@ -1,14 +1,14 @@
-import { useEffect, useCallback } from 'react';
-import { AppLayout } from '@common/components/AppLayout';
-import { useAppAccess } from '@common/hooks/useAuth';
-import { useApi } from '@common/hooks/useApi';
-import { useThemeStore } from '@common/stores/themeStore';
-import { adminNavItems } from '../navigation';
-import { getUsers, approveUser } from '../services/userService';
-import { UserTable } from '../components/UserTable';
+import { AppLayout } from "@common/components/AppLayout";
+import { useApi } from "@common/hooks/useApi";
+import { useAppAccess } from "@common/hooks/useAuth";
+import { useThemeStore } from "@common/stores/themeStore";
+import { useCallback, useEffect } from "react";
+import { UserTable } from "../components/UserTable";
+import { adminNavItems } from "../navigation";
+import { approveUser, getUsers } from "../services/userService";
 
 export function ApprovalPage() {
-  useAppAccess('/admin');
+  useAppAccess("/admin");
   const { theme } = useThemeStore();
 
   const fetcher = useCallback(() => getUsers(), []);
@@ -18,7 +18,7 @@ export function ApprovalPage() {
     execute();
   }, [execute]);
 
-  const pendingUsers = users?.filter((u) => u.status_name === 'PENDING') ?? [];
+  const pendingUsers = users?.filter((u) => u.status_name === "PENDING") ?? [];
 
   const handleApprove = async (userIdx: number) => {
     await approveUser({ user_idx: userIdx });
@@ -26,21 +26,32 @@ export function ApprovalPage() {
   };
 
   return (
-    <AppLayout title="가입 승인" appName="ADMIN" sidebarItems={adminNavItems} version={__APP_VERSION__}>
+    <AppLayout
+      title="가입 승인"
+      appName="관리자 설정"
+      sidebarItems={adminNavItems}
+      version={__APP_VERSION__}
+    >
       <div
         style={{
           backgroundColor: theme.colors.surface,
-          padding: '24px',
+          padding: "24px",
           borderRadius: theme.radius.md,
           boxShadow: theme.shadow.card,
         }}
       >
         {loading && <p>로딩 중...</p>}
         {pendingUsers.length === 0 && !loading && (
-          <p style={{ color: theme.colors.textMuted }}>승인 대기 중인 사용자가 없습니다.</p>
+          <p style={{ color: theme.colors.textMuted }}>
+            승인 대기 중인 사용자가 없습니다.
+          </p>
         )}
         {pendingUsers.length > 0 && (
-          <UserTable users={pendingUsers} onSelect={() => {}} onApprove={handleApprove} />
+          <UserTable
+            users={pendingUsers}
+            onSelect={() => {}}
+            onApprove={handleApprove}
+          />
         )}
       </div>
     </AppLayout>

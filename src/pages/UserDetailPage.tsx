@@ -1,16 +1,16 @@
-import { useState } from 'react';
-import { AppLayout } from '@common/components/AppLayout';
-import { Avatar } from '@common/components/Avatar';
-import { Modal } from '@common/components/Modal';
-import { Input } from '@common/components/Input';
-import { Button } from '@common/components/Button';
-import { useAppAccess } from '@common/hooks/useAuth';
-import { useThemeStore } from '@common/stores/themeStore';
-import type { VUser } from '@common/types/auth';
-import { adminNavItems } from '../navigation';
-import { updateUser, deleteUser, resetPassword } from '../services/userService';
-import type { UpdateUserRequest } from '../types/user';
-import { UserForm } from '../components/UserForm';
+import { AppLayout } from "@common/components/AppLayout";
+import { Avatar } from "@common/components/Avatar";
+import { Button } from "@common/components/Button";
+import { Input } from "@common/components/Input";
+import { Modal } from "@common/components/Modal";
+import { useAppAccess } from "@common/hooks/useAuth";
+import { useThemeStore } from "@common/stores/themeStore";
+import type { VUser } from "@common/types/auth";
+import { useState } from "react";
+import { UserForm } from "../components/UserForm";
+import { adminNavItems } from "../navigation";
+import { deleteUser, resetPassword, updateUser } from "../services/userService";
+import type { UpdateUserRequest } from "../types/user";
 
 interface UserDetailPageProps {
   user: VUser;
@@ -18,24 +18,24 @@ interface UserDetailPageProps {
 }
 
 export function UserDetailPage({ user, onBack }: UserDetailPageProps) {
-  const currentUser = useAppAccess('/admin');
+  const currentUser = useAppAccess("/admin");
   const { theme } = useThemeStore();
   const [message, setMessage] = useState<string | null>(null);
   const [resetModalOpen, setResetModalOpen] = useState(false);
-  const [newPassword, setNewPassword] = useState('');
+  const [newPassword, setNewPassword] = useState("");
 
   const handleSubmit = async (idx: number, data: UpdateUserRequest) => {
     setMessage(null);
     try {
       await updateUser(idx, data);
-      setMessage('수정되었습니다.');
+      setMessage("수정되었습니다.");
     } catch {
       // interceptor가 alert 처리
     }
   };
 
   const handleDelete = async (idx: number) => {
-    if (!confirm('정말 삭제하시겠습니까?')) return;
+    if (!confirm("정말 삭제하시겠습니까?")) return;
     try {
       await deleteUser(idx);
       onBack();
@@ -48,34 +48,45 @@ export function UserDetailPage({ user, onBack }: UserDetailPageProps) {
     try {
       await resetPassword({ user_idx: user.idx, new_password: newPassword });
       setResetModalOpen(false);
-      setNewPassword('');
-      setMessage('비밀번호가 초기화되었습니다.');
+      setNewPassword("");
+      setMessage("비밀번호가 초기화되었습니다.");
     } catch {
       // interceptor가 alert 처리
     }
   };
 
   return (
-    <AppLayout title="회원 상세" appName="ADMIN" sidebarItems={adminNavItems} version={__APP_VERSION__}>
+    <AppLayout
+      title="회원 상세"
+      appName="관리자 설정"
+      sidebarItems={adminNavItems}
+      version={__APP_VERSION__}
+    >
       <div
         style={{
           backgroundColor: theme.colors.surface,
-          padding: '24px',
+          padding: "24px",
           borderRadius: theme.radius.md,
-          maxWidth: '480px',
+          maxWidth: "480px",
           boxShadow: theme.shadow.card,
         }}
       >
-        <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            alignItems: "center",
+          }}
+        >
           <Button variant="secondary" onClick={onBack}>
             목록으로
           </Button>
         </div>
         <div
           style={{
-            display: 'flex',
-            justifyContent: 'center',
-            padding: '8px 0 20px',
+            display: "flex",
+            justifyContent: "center",
+            padding: "8px 0 20px",
           }}
         >
           <Avatar name={user.name} size={80} />
@@ -90,12 +101,16 @@ export function UserDetailPage({ user, onBack }: UserDetailPageProps) {
           <Button
             variant="secondary"
             onClick={() => setResetModalOpen(true)}
-            style={{ marginTop: '12px', width: '100%' }}
+            style={{ marginTop: "12px", width: "100%" }}
           >
             비밀번호 초기화
           </Button>
         )}
-        {message && <p style={{ color: theme.colors.success, marginTop: '12px' }}>{message}</p>}
+        {message && (
+          <p style={{ color: theme.colors.success, marginTop: "12px" }}>
+            {message}
+          </p>
+        )}
       </div>
 
       <Modal
@@ -110,11 +125,15 @@ export function UserDetailPage({ user, onBack }: UserDetailPageProps) {
           onChange={(e) => setNewPassword(e.target.value)}
           required
         />
-        <div style={{ display: 'flex', gap: '8px', marginTop: '16px' }}>
+        <div style={{ display: "flex", gap: "8px", marginTop: "16px" }}>
           <Button onClick={handleResetPassword} style={{ flex: 1 }}>
             초기화
           </Button>
-          <Button variant="secondary" onClick={() => setResetModalOpen(false)} style={{ flex: 1 }}>
+          <Button
+            variant="secondary"
+            onClick={() => setResetModalOpen(false)}
+            style={{ flex: 1 }}
+          >
             취소
           </Button>
         </div>
