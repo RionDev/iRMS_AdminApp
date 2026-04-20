@@ -65,6 +65,7 @@ export function ActiveUserPage() {
           users={nav.items}
           onSelect={setSelectedUser}
           showLastAccess={false}
+          compact
         />
         {nav.loading && <p>로딩 중...</p>}
         {!nav.loading && nav.items.length === 0 && (
