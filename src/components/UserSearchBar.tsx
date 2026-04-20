@@ -1,7 +1,7 @@
-import { Button } from '@common/components/Button';
-import { useThemeStore } from '@common/stores/themeStore';
+import { SearchBar } from '@common/components/SearchBar';
+import { SearchInput } from '@common/components/SearchInput';
+import { SearchSelect } from '@common/components/SearchSelect';
 import { ROLE_OPTIONS, TEAM_OPTIONS } from '@common/types/constants';
-import type { FormEvent } from 'react';
 import { useState } from 'react';
 
 export interface UserSearchFilters {
@@ -16,32 +16,10 @@ interface UserSearchBarProps {
 }
 
 export function UserSearchBar({ onSearch }: UserSearchBarProps) {
-  const { theme } = useThemeStore();
   const [team, setTeam] = useState('');
   const [role, setRole] = useState('');
   const [name, setName] = useState('');
   const [id, setId] = useState('');
-
-  const selectStyle = {
-    padding: '8px',
-    borderRadius: theme.radius.sm,
-    border: `1px solid ${theme.colors.border}`,
-    fontFamily: theme.fontFamily,
-    fontSize: theme.fontSize.base,
-    color: theme.colors.text,
-    backgroundColor: theme.colors.surface,
-    minWidth: '120px',
-  } as const;
-
-  const inputStyle = {
-    padding: '8px',
-    borderRadius: theme.radius.sm,
-    border: `1px solid ${theme.colors.border}`,
-    fontFamily: theme.fontFamily,
-    fontSize: theme.fontSize.base,
-    boxSizing: 'border-box',
-    minWidth: '140px',
-  } as const;
 
   const buildFilters = (): UserSearchFilters => {
     const filters: UserSearchFilters = {};
@@ -54,8 +32,7 @@ export function UserSearchBar({ onSearch }: UserSearchBarProps) {
     return filters;
   };
 
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
+  const handleSearch = () => {
     const filters = buildFilters();
     if (Object.keys(filters).length === 0) return;
     onSearch(filters);
@@ -70,20 +47,10 @@ export function UserSearchBar({ onSearch }: UserSearchBarProps) {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      style={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        gap: '8px',
-        alignItems: 'center',
-        marginBottom: '16px',
-      }}
-    >
-      <select
+    <SearchBar onSearch={handleSearch} onReset={handleReset}>
+      <SearchSelect
         value={team}
         onChange={(e) => setTeam(e.target.value)}
-        style={selectStyle}
         aria-label="팀"
       >
         <option value="">팀 전체</option>
@@ -92,11 +59,10 @@ export function UserSearchBar({ onSearch }: UserSearchBarProps) {
             {opt.label}
           </option>
         ))}
-      </select>
-      <select
+      </SearchSelect>
+      <SearchSelect
         value={role}
         onChange={(e) => setRole(e.target.value)}
-        style={selectStyle}
         aria-label="역할"
       >
         <option value="">역할 전체</option>
@@ -105,27 +71,19 @@ export function UserSearchBar({ onSearch }: UserSearchBarProps) {
             {opt.label}
           </option>
         ))}
-      </select>
-      <input
-        type="text"
+      </SearchSelect>
+      <SearchInput
         placeholder="이름"
         value={name}
         onChange={(e) => setName(e.target.value)}
-        style={inputStyle}
         aria-label="이름"
       />
-      <input
-        type="text"
+      <SearchInput
         placeholder="아이디"
         value={id}
         onChange={(e) => setId(e.target.value)}
-        style={inputStyle}
         aria-label="아이디"
       />
-      <Button type="submit">검색</Button>
-      <Button type="button" variant="secondary" onClick={handleReset}>
-        초기화
-      </Button>
-    </form>
+    </SearchBar>
   );
 }

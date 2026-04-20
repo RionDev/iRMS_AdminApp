@@ -51,6 +51,7 @@ export function ActiveUserPage() {
       sidebarItems={adminNavItems}
       version={__APP_VERSION__}
     >
+      <UserSearchBar onSearch={setFilters} />
       <div
         style={{
           backgroundColor: theme.colors.surface,
@@ -59,7 +60,6 @@ export function ActiveUserPage() {
           boxShadow: theme.shadow.card,
         }}
       >
-        <UserSearchBar onSearch={setFilters} />
         <UserTable users={nav.items} onSelect={setSelectedUser} />
         {nav.loading && <p>로딩 중...</p>}
         {!nav.loading && nav.items.length === 0 && (

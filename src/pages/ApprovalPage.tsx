@@ -48,6 +48,7 @@ export function ApprovalPage() {
       sidebarItems={adminNavItems}
       version={__APP_VERSION__}
     >
+      <UserSearchBar onSearch={setFilters} />
       <div
         style={{
           backgroundColor: theme.colors.surface,
@@ -56,7 +57,6 @@ export function ApprovalPage() {
           boxShadow: theme.shadow.card,
         }}
       >
-        <UserSearchBar onSearch={setFilters} />
         {nav.items.length > 0 && (
           <UserTable
             users={nav.items}
