@@ -30,10 +30,11 @@ export function UserTable({
         borderCollapse: 'collapse',
         color: theme.colors.text,
         fontSize: theme.fontSize.base,
+        textAlign: compact ? 'center' : 'left',
       }}
     >
       <thead>
-        <tr style={{ borderBottom: `2px solid ${theme.colors.surfaceMuted}`, textAlign: 'left' }}>
+        <tr style={{ borderBottom: `2px solid ${theme.colors.surfaceMuted}` }}>
           <th style={{ padding: cellPad, whiteSpace: nowrap }}>이름</th>
           <th style={{ padding: cellPad, whiteSpace: nowrap }}>아이디</th>
           <th style={{ padding: cellPad, whiteSpace: nowrap }}>팀</th>
