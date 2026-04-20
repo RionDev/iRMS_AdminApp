@@ -61,7 +61,11 @@ export function ActiveUserPage() {
           boxShadow: theme.shadow.card,
         }}
       >
-        <UserTable users={nav.items} onSelect={setSelectedUser} />
+        <UserTable
+          users={nav.items}
+          onSelect={setSelectedUser}
+          showLastAccess={false}
+        />
         {nav.loading && <p>로딩 중...</p>}
         {!nav.loading && nav.items.length === 0 && (
           <p style={{ color: theme.colors.textMuted }}>계정이 없습니다.</p>
