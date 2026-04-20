@@ -26,7 +26,7 @@ export function UserTable({
   return (
     <table
       style={{
-        width: compact ? 'auto' : '100%',
+        width: compact ? '1000px' : '100%',
         borderCollapse: 'collapse',
         color: theme.colors.text,
         fontSize: theme.fontSize.base,
