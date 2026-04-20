@@ -1,4 +1,5 @@
 import { AppLayout } from "@common/components/AppLayout";
+import { Drawer } from "@common/components/Drawer";
 import { Pagination } from "@common/components/Pagination";
 import { useAppAccess } from "@common/hooks/useAuth";
 import { usePagedNav } from "@common/hooks/usePagedNav";
@@ -11,39 +12,41 @@ import {
 } from "../components/UserSearchBar";
 import { UserTable } from "../components/UserTable";
 import { adminNavItems } from "../navigation";
-import { approveUser, getUsers } from "../services/userService";
+import { getUsers } from "../services/userService";
+import { UserDetailPage } from "./UserDetailPage";
 
 const PAGE_SIZE = 20;
-const PENDING_ONLY = ["PENDING"];
+const ACTIVE_ONLY = ["ACTIVE"];
 
-export function ApprovalPage() {
+export function ActiveUserPage() {
   useAppAccess("/admin");
   const { theme } = useThemeStore();
   const [filters, setFilters] = useState<UserSearchFilters>({});
+  const [selectedUser, setSelectedUser] = useState<VUser | null>(null);
+  const [reloadKey, setReloadKey] = useState(0);
   const filterKey = JSON.stringify(filters);
 
   const fetcher = useCallback(
     (cursor: string | undefined, snapshotIdx: number | undefined, size: number) =>
       getUsers(
-        { status: PENDING_ONLY, ...filters },
+        { status: ACTIVE_ONLY, ...filters },
         cursor,
         snapshotIdx,
         size,
       ),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [filterKey],
+    [filterKey, reloadKey],
   );
 
-  const nav = usePagedNav<VUser>({ fetcher, size: PAGE_SIZE, deps: [filterKey] });
-
-  const handleApprove = async (userIdx: number) => {
-    await approveUser({ user_idx: userIdx });
-    nav.reset();
-  };
+  const nav = usePagedNav<VUser>({
+    fetcher,
+    size: PAGE_SIZE,
+    deps: [filterKey, reloadKey],
+  });
 
   return (
     <AppLayout
-      title="가입 승인"
+      title="계정 목록"
       appName="관리자 설정"
       sidebarItems={adminNavItems}
       version={__APP_VERSION__}
@@ -57,18 +60,10 @@ export function ApprovalPage() {
         }}
       >
         <UserSearchBar onSearch={setFilters} />
-        {nav.items.length > 0 && (
-          <UserTable
-            users={nav.items}
-            onSelect={() => {}}
-            onApprove={handleApprove}
-          />
-        )}
+        <UserTable users={nav.items} onSelect={setSelectedUser} />
         {nav.loading && <p>로딩 중...</p>}
         {!nav.loading && nav.items.length === 0 && (
-          <p style={{ color: theme.colors.textMuted }}>
-            승인 대기 중인 사용자가 없습니다.
-          </p>
+          <p style={{ color: theme.colors.textMuted }}>계정이 없습니다.</p>
         )}
         <Pagination
           page={nav.page}
@@ -81,6 +76,18 @@ export function ApprovalPage() {
           loading={nav.loading}
         />
       </div>
+      <Drawer
+        isOpen={selectedUser !== null}
+        onClose={() => setSelectedUser(null)}
+      >
+        {selectedUser && (
+          <UserDetailPage
+            user={selectedUser}
+            onClose={() => setSelectedUser(null)}
+            onAfterDelete={() => setReloadKey((k) => k + 1)}
+          />
+        )}
+      </Drawer>
     </AppLayout>
   );
 }

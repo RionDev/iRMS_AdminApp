@@ -1,20 +1,22 @@
-import { AppLayout } from "@common/components/AppLayout";
 import { Avatar } from "@common/components/Avatar";
 import { Button } from "@common/components/Button";
 import { useThemeStore } from "@common/stores/themeStore";
 import type { VUser } from "@common/types/auth";
 import { useState } from "react";
 import { UserForm } from "../components/UserForm";
-import { adminNavItems } from "../navigation";
 import { deleteUser, updateUser } from "../services/userService";
 import type { UpdateUserRequest } from "../types/user";
 
 interface UserDetailPageProps {
   user: VUser;
-  onBack: () => void;
+  onClose: () => void;
+  onAfterDelete?: () => void;
 }
 
-export function UserDetailPage({ user, onBack }: UserDetailPageProps) {
+/**
+ * 회원 상세/수정 패널. Drawer 내부에서 렌더되는 body-only 컴포넌트.
+ */
+export function UserDetailPage({ user, onClose, onAfterDelete }: UserDetailPageProps) {
   const { theme } = useThemeStore();
   const [message, setMessage] = useState<string | null>(null);
 
@@ -32,60 +34,56 @@ export function UserDetailPage({ user, onBack }: UserDetailPageProps) {
     if (!confirm("정말 삭제하시겠습니까?")) return;
     try {
       await deleteUser(idx);
-      onBack();
+      onAfterDelete?.();
+      onClose();
     } catch {
       // interceptor가 alert 처리
     }
   };
 
   return (
-    <AppLayout
-      title="회원 상세"
-      appName="관리자 설정"
-      sidebarItems={adminNavItems}
-      version={__APP_VERSION__}
-    >
+    <div style={{ padding: "24px" }}>
       <div
         style={{
-          backgroundColor: theme.colors.surface,
-          padding: "24px",
-          borderRadius: theme.radius.md,
-          maxWidth: "480px",
-          boxShadow: theme.shadow.card,
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "16px",
         }}
       >
-        <div
+        <h2
           style={{
-            display: "flex",
-            justifyContent: "flex-end",
-            alignItems: "center",
+            margin: 0,
+            fontSize: theme.fontSize.xl,
+            color: theme.colors.text,
           }}
         >
-          <Button variant="secondary" onClick={onBack}>
-            목록으로
-          </Button>
-        </div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            padding: "8px 0 20px",
-          }}
-        >
-          <Avatar name={user.name} size={80} />
-        </div>
-        <UserForm
-          user={user}
-          onSubmit={handleSubmit}
-          onDelete={handleDelete}
-          onCancel={onBack}
-        />
-        {message && (
-          <p style={{ color: theme.colors.success, marginTop: "12px" }}>
-            {message}
-          </p>
-        )}
+          회원 상세
+        </h2>
+        <Button variant="secondary" onClick={onClose}>
+          닫기
+        </Button>
       </div>
-    </AppLayout>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          padding: "8px 0 20px",
+        }}
+      >
+        <Avatar name={user.name} size={80} />
+      </div>
+      <UserForm
+        user={user}
+        onSubmit={handleSubmit}
+        onDelete={handleDelete}
+        onCancel={onClose}
+      />
+      {message && (
+        <p style={{ color: theme.colors.success, marginTop: "12px" }}>
+          {message}
+        </p>
+      )}
+    </div>
   );
 }

@@ -52,12 +52,12 @@ export function UserForm({ user, onSubmit, onDelete, onCancel }: UserFormProps) 
 
   return (
     <form onSubmit={handleSubmit}>
-      <p style={{ color: theme.colors.textMuted, fontSize: '14px', margin: '0 0 16px 0' }}>
+      <p style={{ color: theme.colors.textMuted, fontSize: theme.fontSize.base, margin: '0 0 16px 0' }}>
         아이디: {user.id}
       </p>
       <Input label="이름" value={name} onChange={(e) => setName(e.target.value)} required />
       <div style={{ marginBottom: '12px' }}>
-        <label style={{ display: 'block', marginBottom: '4px', fontSize: '14px', color: theme.colors.text }}>팀</label>
+        <label style={{ display: 'block', marginBottom: '4px', fontSize: theme.fontSize.base, color: theme.colors.text }}>팀</label>
         <select
           value={team}
           onChange={(e) => setTeam(e.target.value as TeamType)}
@@ -71,7 +71,7 @@ export function UserForm({ user, onSubmit, onDelete, onCancel }: UserFormProps) 
         </select>
       </div>
       <div style={{ marginBottom: '12px' }}>
-        <label style={{ display: 'block', marginBottom: '4px', fontSize: '14px', color: theme.colors.text }}>역할</label>
+        <label style={{ display: 'block', marginBottom: '4px', fontSize: theme.fontSize.base, color: theme.colors.text }}>역할</label>
         <select
           value={role}
           onChange={(e) => setRole(e.target.value as RoleType)}
