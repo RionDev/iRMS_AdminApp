@@ -51,37 +51,79 @@ export function ActiveUserPage() {
       sidebarItems={adminNavItems}
       version={__APP_VERSION__}
     >
-      <UserSearchBar onSearch={setFilters} />
-      <div
-        style={{
-          backgroundColor: theme.colors.surface,
-          padding: "24px",
-          borderRadius: theme.radius.md,
-          border: `1px solid ${theme.colors.border}`,
-          boxShadow: theme.shadow.card,
-          width: "fit-content",
-        }}
-      >
-        <UserTable
-          users={nav.items}
-          onSelect={setSelectedUser}
-          showLastAccess={false}
-          compact
-        />
-        {nav.loading && <p>로딩 중...</p>}
-        {!nav.loading && nav.items.length === 0 && (
-          <p style={{ color: theme.colors.textMuted }}>계정이 없습니다.</p>
-        )}
-        <Pagination
-          page={nav.page}
-          totalPages={nav.totalPages}
-          total={nav.total}
-          hasPrev={nav.hasPrev}
-          hasNext={nav.hasNext}
-          onPrev={nav.prev}
-          onNext={nav.next}
-          loading={nav.loading}
-        />
+      <div style={{ display: "flex", gap: "16px", alignItems: "flex-start" }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            width: "1050px",
+            flexShrink: 0,
+          }}
+        >
+          <UserSearchBar onSearch={setFilters} />
+          <div
+            style={{
+              backgroundColor: theme.colors.surface,
+              padding: "24px",
+              borderRadius: theme.radius.md,
+              border: `1px solid ${theme.colors.border}`,
+              boxShadow: theme.shadow.card,
+            }}
+          >
+            <UserTable
+              users={nav.items}
+              onSelect={setSelectedUser}
+              showLastAccess={false}
+              compact
+            />
+            {nav.loading && <p>로딩 중...</p>}
+            {!nav.loading && nav.items.length === 0 && (
+              <p style={{ color: theme.colors.textMuted }}>계정이 없습니다.</p>
+            )}
+            <Pagination
+              page={nav.page}
+              totalPages={nav.totalPages}
+              total={nav.total}
+              hasPrev={nav.hasPrev}
+              hasNext={nav.hasNext}
+              onPrev={nav.prev}
+              onNext={nav.next}
+              loading={nav.loading}
+            />
+          </div>
+        </div>
+        <aside
+          style={{
+            flex: 1,
+            minWidth: 0,
+            alignSelf: "stretch",
+            backgroundColor: theme.colors.surface,
+            padding: "24px",
+            borderRadius: theme.radius.md,
+            border: `1px solid ${theme.colors.border}`,
+            boxShadow: theme.shadow.card,
+          }}
+        >
+          <h3
+            style={{
+              margin: 0,
+              marginBottom: "12px",
+              fontSize: theme.fontSize.lg,
+              color: theme.colors.text,
+            }}
+          >
+            대시보드
+          </h3>
+          <p
+            style={{
+              margin: 0,
+              color: theme.colors.textMuted,
+              fontSize: theme.fontSize.sm,
+            }}
+          >
+            전체/대기/차단 계정 수 등 요약 정보가 표시될 영역입니다.
+          </p>
+        </aside>
       </div>
       <Drawer
         isOpen={selectedUser !== null}
