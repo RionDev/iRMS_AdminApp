@@ -16,7 +16,7 @@ import { adminNavItems } from "../navigation";
 import { getUsers } from "../services/userService";
 import { UserDetailPage } from "./UserDetailPage";
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 15;
 const ACTIVE_ONLY = ["ACTIVE"];
 
 export function ActiveUserPage() {
@@ -53,7 +53,14 @@ export function ActiveUserPage() {
       version={__APP_VERSION__}
       contentMaxWidth="1700px"
     >
-      <div style={{ display: "flex", gap: "16px", alignItems: "flex-start" }}>
+      <div
+        style={{
+          display: "flex",
+          gap: "16px",
+          alignItems: "stretch",
+          minHeight: "calc(100vh - 160px)",
+        }}
+      >
         <div
           style={{
             display: "flex",
@@ -65,6 +72,9 @@ export function ActiveUserPage() {
           <UserSearchBar onSearch={setFilters} />
           <div
             style={{
+              flex: 1,
+              display: "flex",
+              flexDirection: "column",
               backgroundColor: theme.colors.surface,
               padding: "24px",
               borderRadius: theme.radius.md,
@@ -82,23 +92,24 @@ export function ActiveUserPage() {
             {!nav.loading && nav.items.length === 0 && (
               <p style={{ color: theme.colors.textMuted }}>계정이 없습니다.</p>
             )}
-            <Pagination
-              page={nav.page}
-              totalPages={nav.totalPages}
-              total={nav.total}
-              hasPrev={nav.hasPrev}
-              hasNext={nav.hasNext}
-              onPrev={nav.prev}
-              onNext={nav.next}
-              loading={nav.loading}
-            />
+            <div style={{ marginTop: "auto" }}>
+              <Pagination
+                page={nav.page}
+                totalPages={nav.totalPages}
+                total={nav.total}
+                hasPrev={nav.hasPrev}
+                hasNext={nav.hasNext}
+                onPrev={nav.prev}
+                onNext={nav.next}
+                loading={nav.loading}
+              />
+            </div>
           </div>
         </div>
         <aside
           style={{
             flex: 1,
             minWidth: 0,
-            alignSelf: "stretch",
             backgroundColor: theme.colors.surface,
             padding: "24px",
             borderRadius: theme.radius.md,
