@@ -16,7 +16,7 @@ import { adminNavItems } from "../navigation";
 import { getUsers } from "../services/userService";
 import { UserDetailPage } from "./UserDetailPage";
 
-const PAGE_SIZE = 18;
+const PAGE_SIZE = 17;
 const ACTIVE_ONLY = ["ACTIVE"];
 
 export function ActiveUserPage() {
