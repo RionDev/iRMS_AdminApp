@@ -73,7 +73,26 @@ export function UserStats({ reloadKey }: UserStatsProps) {
         minHeight: 0,
       }}
     >
-      {/* 최상단: 전체 계정 요약 */}
+      {/* 도넛 차트: 활성/대기/차단 비율 */}
+      <div
+        style={{
+          ...blockStyle,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flex: 1,
+          minHeight: 0,
+        }}
+      >
+        <DonutChart
+          segments={segments}
+          centerLabel={total ?? 0}
+          centerSub="전체"
+          theme={theme}
+        />
+      </div>
+
+      {/* 전체 계정 요약 (차트 밑) */}
       <div
         style={{
           ...blockStyle,
@@ -99,25 +118,6 @@ export function UserStats({ reloadKey }: UserStatsProps) {
         >
           {total ?? '—'}
         </span>
-      </div>
-
-      {/* 도넛 차트: 활성/대기/차단 비율 */}
-      <div
-        style={{
-          ...blockStyle,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          flex: 1,
-          minHeight: 0,
-        }}
-      >
-        <DonutChart
-          segments={segments}
-          centerLabel={total ?? 0}
-          centerSub="전체"
-          theme={theme}
-        />
       </div>
 
       {/* 활성/대기/차단 stat 리스트 */}
