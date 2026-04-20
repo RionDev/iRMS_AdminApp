@@ -10,6 +10,7 @@ import {
   UserSearchBar,
   type UserSearchFilters,
 } from "../components/UserSearchBar";
+import { UserStats } from "../components/UserStats";
 import { UserTable } from "../components/UserTable";
 import { adminNavItems } from "../navigation";
 import { getUsers } from "../services/userService";
@@ -115,15 +116,7 @@ export function ActiveUserPage() {
           >
             대시보드
           </h3>
-          <p
-            style={{
-              margin: 0,
-              color: theme.colors.textMuted,
-              fontSize: theme.fontSize.sm,
-            }}
-          >
-            전체/대기/차단 계정 수 등 요약 정보가 표시될 영역입니다.
-          </p>
+          <UserStats reloadKey={reloadKey} />
         </aside>
       </div>
       <Drawer
