@@ -58,14 +58,24 @@ export function UserStats({ reloadKey }: UserStatsProps) {
   ];
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '8px',
+        flex: 1,
+        minHeight: 0,
+      }}
+    >
       {items.map((item) => (
         <div
           key={item.label}
           style={{
+            flex: 1,
+            minHeight: 0,
             display: 'flex',
             justifyContent: 'space-between',
-            alignItems: 'baseline',
+            alignItems: 'center',
             padding: '12px 16px',
             borderRadius: theme.radius.sm,
             border: `1px solid ${theme.colors.border}`,

@@ -16,7 +16,7 @@ import { adminNavItems } from "../navigation";
 import { getUsers } from "../services/userService";
 import { UserDetailPage } from "./UserDetailPage";
 
-const PAGE_SIZE = 15;
+const PAGE_SIZE = 18;
 const ACTIVE_ONLY = ["ACTIVE"];
 
 export function ActiveUserPage() {
@@ -110,6 +110,8 @@ export function ActiveUserPage() {
           style={{
             flex: 1,
             minWidth: 0,
+            display: "flex",
+            flexDirection: "column",
             backgroundColor: theme.colors.surface,
             padding: "24px",
             borderRadius: theme.radius.md,
