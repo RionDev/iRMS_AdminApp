@@ -77,12 +77,14 @@ export function UserSearchBar({ onSearch }: UserSearchBarProps) {
         value={name}
         onChange={(e) => setName(e.target.value)}
         aria-label="이름"
+        style={{ flex: 1 }}
       />
       <SearchInput
         placeholder="아이디"
         value={id}
         onChange={(e) => setId(e.target.value)}
         aria-label="아이디"
+        style={{ flex: 1 }}
       />
     </SearchBar>
   );
