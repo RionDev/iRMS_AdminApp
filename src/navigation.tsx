@@ -50,7 +50,13 @@ const blockedIcon = (
 );
 
 export const adminNavItems: SidebarItem[] = [
-  { label: "계정 목록", to: "/users", icon: userIcon },
-  { label: "가입 승인", to: "/approval", icon: approvalIcon },
-  { label: "차단 계정", to: "/blocked", icon: blockedIcon },
+  {
+    label: "계정 관리",
+    icon: userIcon,
+    children: [
+      { label: "계정 목록", to: "/users", icon: userIcon },
+      { label: "가입 승인", to: "/approval", icon: approvalIcon },
+      { label: "차단 계정", to: "/blocked", icon: blockedIcon },
+    ],
+  },
 ];
