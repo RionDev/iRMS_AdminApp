@@ -50,13 +50,14 @@ export function ActiveUserPage() {
       appName="관리자 설정"
       sidebarItems={adminNavItems}
       version={__APP_VERSION__}
+      contentMaxWidth="1700px"
     >
       <div style={{ display: "flex", gap: "16px", alignItems: "flex-start" }}>
         <div
           style={{
             display: "flex",
             flexDirection: "column",
-            width: "1050px",
+            width: "1350px",
             flexShrink: 0,
           }}
         >
