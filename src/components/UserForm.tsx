@@ -24,7 +24,6 @@ interface UserFormProps {
   user: VUser;
   onSubmit: (idx: number, data: UpdateUserRequest) => void;
   onDelete: (idx: number) => void;
-  onCancel: () => void;
 }
 
 function formatTimestamp(value: string | null): string {
@@ -34,7 +33,7 @@ function formatTimestamp(value: string | null): string {
   return d.toLocaleString();
 }
 
-export function UserForm({ user, onSubmit, onDelete, onCancel }: UserFormProps) {
+export function UserForm({ user, onSubmit, onDelete }: UserFormProps) {
   const { theme } = useThemeStore();
   const { user: currentUser } = useAuth();
   const initialTeam = (user.team as TeamType) ?? Team.ENGINE;
@@ -173,19 +172,13 @@ export function UserForm({ user, onSubmit, onDelete, onCancel }: UserFormProps) 
         </Button>
       )}
 
-      <div style={{ display: "flex", gap: "8px" }}>
-        <Button type="submit" disabled={!isDirty} style={{ flex: 1 }}>
-          저장
-        </Button>
-        <Button
-          variant="secondary"
-          type="button"
-          onClick={onCancel}
-          style={{ flex: 1 }}
-        >
-          취소
-        </Button>
-      </div>
+      <Button
+        type="submit"
+        disabled={!isDirty}
+        style={{ width: "100%" }}
+      >
+        저장
+      </Button>
       {isAdmin && (
         <Button
           variant="secondary"

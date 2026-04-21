@@ -77,7 +77,6 @@ export function UserDetailPage({ user, onClose, onAfterDelete }: UserDetailPageP
         user={user}
         onSubmit={handleSubmit}
         onDelete={handleDelete}
-        onCancel={onClose}
       />
       {message && (
         <p style={{ color: theme.colors.success, marginTop: "12px" }}>
