@@ -21,7 +21,7 @@ export function UserTable({
 }: UserTableProps) {
   const { theme } = useThemeStore();
   const showActions = Boolean(onApprove);
-  const cellPad = compact ? '4px 20px' : '8px';
+  const cellPad = compact ? '12px 20px' : '14px 8px';
   const nowrap = compact ? ('nowrap' as const) : undefined;
   return (
     <table

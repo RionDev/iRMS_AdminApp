@@ -5,19 +5,21 @@ import { useAppAccess } from "@common/hooks/useAuth";
 import { usePagedNav } from "@common/hooks/usePagedNav";
 import { useThemeStore } from "@common/stores/themeStore";
 import type { VUser } from "@common/types/auth";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import {
   UserSearchBar,
   type UserSearchFilters,
 } from "../components/UserSearchBar";
 import { UserStats } from "../components/UserStats";
 import { UserTable } from "../components/UserTable";
+import { useDynamicPageSize } from "../hooks/useDynamicPageSize";
 import { adminNavItems } from "../navigation";
 import { getUsers } from "../services/userService";
 import { UserDetailPage } from "./UserDetailPage";
 
-const PAGE_SIZE = 20;
 const ACTIVE_ONLY = ["ACTIVE"];
+const ROW_HEIGHT = 44;
+const RESERVED_HEIGHT = 140;
 
 export function ActiveUserPage() {
   useAppAccess("/admin");
@@ -26,6 +28,12 @@ export function ActiveUserPage() {
   const [selectedUser, setSelectedUser] = useState<VUser | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
   const filterKey = JSON.stringify(filters);
+
+  const tableContainerRef = useRef<HTMLDivElement>(null);
+  const pageSize = useDynamicPageSize(tableContainerRef, {
+    rowHeight: ROW_HEIGHT,
+    reservedHeight: RESERVED_HEIGHT,
+  });
 
   const fetcher = useCallback(
     (cursor: string | undefined, snapshotIdx: number | undefined, size: number) =>
@@ -41,7 +49,7 @@ export function ActiveUserPage() {
 
   const nav = usePagedNav<VUser>({
     fetcher,
-    size: PAGE_SIZE,
+    size: pageSize,
     deps: [filterKey, reloadKey],
   });
 
@@ -71,6 +79,7 @@ export function ActiveUserPage() {
         >
           <UserSearchBar onSearch={setFilters} />
           <div
+            ref={tableContainerRef}
             style={{
               flex: 1,
               display: "flex",
