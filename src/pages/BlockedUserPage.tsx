@@ -2,10 +2,10 @@ import { AppLayout } from "@common/components/AppLayout";
 import { Drawer } from "@common/components/Drawer";
 import { Pagination } from "@common/components/Pagination";
 import { TableBlock } from "@common/components/TableBlock";
+import { TableEmptyState } from "@common/components/TableEmptyState";
 import { useAppAccess } from "@common/hooks/useAuth";
 import { LAYOUT, useFixedPageSize } from "@common/hooks/useFixedPageSize";
 import { usePagedNav } from "@common/hooks/usePagedNav";
-import { useThemeStore } from "@common/stores/themeStore";
 import type { VUser } from "@common/types/auth";
 import { useCallback, useState } from "react";
 import {
@@ -36,7 +36,6 @@ const OVERHEAD =
 
 export function BlockedUserPage() {
   useAppAccess("/admin");
-  const { theme } = useThemeStore();
   const [filters, setFilters] = useState<UserSearchFilters>({});
   const [selectedUser, setSelectedUser] = useState<VUser | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
@@ -75,9 +74,9 @@ export function BlockedUserPage() {
       <UserSearchBar onSearch={setFilters} />
       <TableBlock padding="24px">
         <UserTable users={nav.items} onSelect={setSelectedUser} />
-        {nav.loading && <p>로딩 중...</p>}
+        {nav.loading && <TableEmptyState>로딩 중...</TableEmptyState>}
         {!nav.loading && nav.items.length === 0 && (
-          <p style={{ color: theme.colors.textMuted }}>차단된 계정이 없습니다.</p>
+          <TableEmptyState>차단된 계정이 없습니다.</TableEmptyState>
         )}
         <div style={{ marginTop: "auto" }}>
           <Pagination

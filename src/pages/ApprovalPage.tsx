@@ -1,10 +1,10 @@
 import { AppLayout } from "@common/components/AppLayout";
 import { Pagination } from "@common/components/Pagination";
 import { TableBlock } from "@common/components/TableBlock";
+import { TableEmptyState } from "@common/components/TableEmptyState";
 import { useAppAccess } from "@common/hooks/useAuth";
 import { LAYOUT, useFixedPageSize } from "@common/hooks/useFixedPageSize";
 import { usePagedNav } from "@common/hooks/usePagedNav";
-import { useThemeStore } from "@common/stores/themeStore";
 import type { VUser } from "@common/types/auth";
 import { useCallback, useState } from "react";
 import {
@@ -34,7 +34,6 @@ const OVERHEAD =
 
 export function ApprovalPage() {
   useAppAccess("/admin");
-  const { theme } = useThemeStore();
   const [filters, setFilters] = useState<UserSearchFilters>({});
   const filterKey = JSON.stringify(filters);
 
@@ -78,11 +77,9 @@ export function ApprovalPage() {
             onApprove={handleApprove}
           />
         )}
-        {nav.loading && <p>로딩 중...</p>}
+        {nav.loading && <TableEmptyState>로딩 중...</TableEmptyState>}
         {!nav.loading && nav.items.length === 0 && (
-          <p style={{ color: theme.colors.textMuted }}>
-            승인 대기 중인 사용자가 없습니다.
-          </p>
+          <TableEmptyState>승인 대기 중인 사용자가 없습니다.</TableEmptyState>
         )}
         <div style={{ marginTop: "auto" }}>
           <Pagination

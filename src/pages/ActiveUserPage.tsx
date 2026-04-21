@@ -2,6 +2,7 @@ import { AppLayout } from "@common/components/AppLayout";
 import { Drawer } from "@common/components/Drawer";
 import { Pagination } from "@common/components/Pagination";
 import { TableBlock } from "@common/components/TableBlock";
+import { TableEmptyState } from "@common/components/TableEmptyState";
 import { useAppAccess } from "@common/hooks/useAuth";
 import { LAYOUT, useFixedPageSize } from "@common/hooks/useFixedPageSize";
 import { usePagedNav } from "@common/hooks/usePagedNav";
@@ -101,9 +102,9 @@ export function ActiveUserPage() {
               showLastAccess={false}
               compact
             />
-            {nav.loading && <p>로딩 중...</p>}
+            {nav.loading && <TableEmptyState>로딩 중...</TableEmptyState>}
             {!nav.loading && nav.items.length === 0 && (
-              <p style={{ color: theme.colors.textMuted }}>계정이 없습니다.</p>
+              <TableEmptyState>계정이 없습니다.</TableEmptyState>
             )}
             <div style={{ marginTop: "auto" }}>
               <Pagination
