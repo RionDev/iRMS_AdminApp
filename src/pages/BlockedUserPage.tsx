@@ -1,4 +1,8 @@
 import { AppLayout } from "@common/components/AppLayout";
+import {
+  TABLE_ROW_H_NORMAL,
+  TABLE_THEAD_H,
+} from "@common/components/BaseTable";
 import { Drawer } from "@common/components/Drawer";
 import { Pagination } from "@common/components/Pagination";
 import { TableBlock } from "@common/components/TableBlock";
@@ -12,11 +16,7 @@ import {
   UserSearchBar,
   type UserSearchFilters,
 } from "../components/UserSearchBar";
-import {
-  USER_TABLE_ROW_H_NORMAL,
-  USER_TABLE_THEAD_H,
-  UserTable,
-} from "../components/UserTable";
+import { UserTable } from "../components/UserTable";
 import { adminNavItems } from "../navigation";
 import { getUsers } from "../services/userService";
 import { UserDetailPage } from "./UserDetailPage";
@@ -31,7 +31,7 @@ const OVERHEAD =
   LAYOUT.SEARCHBAR_H +
   LAYOUT.SEARCHBAR_MARGIN +
   TABLEBLOCK_PAD_Y +
-  USER_TABLE_THEAD_H +
+  TABLE_THEAD_H +
   LAYOUT.PAGINATION_H;
 
 export function BlockedUserPage() {
@@ -43,7 +43,7 @@ export function BlockedUserPage() {
 
   const pageSize = useFixedPageSize({
     overhead: OVERHEAD,
-    rowHeight: USER_TABLE_ROW_H_NORMAL,
+    rowHeight: TABLE_ROW_H_NORMAL,
   });
 
   const fetcher = useCallback(

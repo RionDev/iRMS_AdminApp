@@ -1,4 +1,8 @@
 import { AppLayout } from "@common/components/AppLayout";
+import {
+  TABLE_ROW_H_NORMAL,
+  TABLE_THEAD_H,
+} from "@common/components/BaseTable";
 import { Pagination } from "@common/components/Pagination";
 import { TableBlock } from "@common/components/TableBlock";
 import { TableEmptyState } from "@common/components/TableEmptyState";
@@ -11,11 +15,7 @@ import {
   UserSearchBar,
   type UserSearchFilters,
 } from "../components/UserSearchBar";
-import {
-  USER_TABLE_ROW_H_NORMAL,
-  USER_TABLE_THEAD_H,
-  UserTable,
-} from "../components/UserTable";
+import { UserTable } from "../components/UserTable";
 import { adminNavItems } from "../navigation";
 import { approveUser, getUsers } from "../services/userService";
 
@@ -29,7 +29,7 @@ const OVERHEAD =
   LAYOUT.SEARCHBAR_H +
   LAYOUT.SEARCHBAR_MARGIN +
   TABLEBLOCK_PAD_Y +
-  USER_TABLE_THEAD_H +
+  TABLE_THEAD_H +
   LAYOUT.PAGINATION_H;
 
 export function ApprovalPage() {
@@ -39,7 +39,7 @@ export function ApprovalPage() {
 
   const pageSize = useFixedPageSize({
     overhead: OVERHEAD,
-    rowHeight: USER_TABLE_ROW_H_NORMAL,
+    rowHeight: TABLE_ROW_H_NORMAL,
   });
 
   const fetcher = useCallback(
