@@ -3,6 +3,11 @@ import type { Theme } from "@common/styles/theme";
 import { useEffect, useState, type ReactNode } from "react";
 import { getUsers } from "../services/userService";
 
+/** 도넛 차트 영역의 최소 높이 (px). 이보다 세로 공간이 부족해지면
+ *  대시보드 aside 의 min-content 가 이 만큼 커지고, 그에 맞춰 flex container /
+ *  테이블 컬럼도 stretch 된다 (ActiveUserPage.DASHBOARD_MIN_HEIGHT 와 연동). */
+const CHART_MIN_HEIGHT = 160;
+
 interface UserStatsProps {
   /** 값이 바뀌면 통계를 다시 가져온다 (예: 계정 삭제/상태 변경 후). */
   reloadKey?: number;
@@ -184,9 +189,11 @@ export function UserStats({ reloadKey }: UserStatsProps) {
         <div
           style={{
             flex: 1,
-            // 이 이하로 줄어들면 도넛이 찌그러지므로 최소 높이를 고정하고,
-            // aside 가 못 버티면 바깥 overflowY:auto 로 스크롤바가 생기게 한다.
-            minHeight: "160px",
+            // 차트 최소 높이 고정. 이 값이 dashboard aside 의 min-content 를
+            // 끌어올리고, flex container alignItems:stretch 를 통해 테이블 컬럼도
+            // 같이 보장됨. ActiveUserPage.DASHBOARD_MIN_HEIGHT 에 반영해 table
+            // row 수도 맞춰 계산한다.
+            minHeight: `${CHART_MIN_HEIGHT}px`,
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
@@ -354,14 +361,23 @@ function DonutChart({
         position: "relative",
         width: "100%",
         height: "100%",
+        minWidth: 0,
+        minHeight: 0,
       }}
     >
       <svg
         viewBox="0 0 100 100"
-        width="100%"
-        height="100%"
         preserveAspectRatio="xMidYMid meet"
-        style={{ display: "block", transform: "rotate(-90deg)" }}
+        style={{
+          // 흐름에서 빼서 intrinsic viewBox 크기가 flex min-content 로
+          // 올라가지 않게 한다. 컨테이너가 0 까지 자유롭게 줄어들 수 있다.
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          display: "block",
+          transform: "rotate(-90deg)",
+        }}
       >
         <circle
           cx={50}

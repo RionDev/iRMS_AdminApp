@@ -23,15 +23,26 @@ import { UserDetailPage } from "./UserDetailPage";
 const ACTIVE_ONLY = ["ACTIVE"];
 /** TableBlock 상하 padding 합 (16*2). compact 모드 page 에서만 이 값. */
 const TABLEBLOCK_PAD_Y = 32;
-const OVERHEAD =
-  LAYOUT.HEADER_H +
-  LAYOUT.FOOTER_H +
-  LAYOUT.MAIN_PAD_Y +
+/** 테이블 컬럼 내부(flex container 안) overhead. 사이드 대시보드 min 과 비교할 때 사용. */
+const INNER_OVERHEAD =
   LAYOUT.SEARCHBAR_H +
   LAYOUT.SEARCHBAR_MARGIN +
   TABLEBLOCK_PAD_Y +
   TABLE_THEAD_H +
   LAYOUT.PAGINATION_H;
+const OVERHEAD =
+  LAYOUT.HEADER_H + LAYOUT.FOOTER_H + LAYOUT.MAIN_PAD_Y + INNER_OVERHEAD;
+/**
+ * 대시보드 aside 의 min-content 높이 추정 (px).
+ * - gradient 카드 ~113
+ * - 계정 상태 분포 박스: h4 + 범례 + padding + 차트 min(160) ≈ 330
+ * - stat list ~194
+ * - aside padding + border ~26
+ * - gap ~24
+ * flex container `alignItems: stretch` 로 테이블 컬럼도 최소 이 높이가 보장됨.
+ * UserStats.CHART_MIN_HEIGHT 와 연동 — 거기 값을 바꾸면 여기도 업데이트.
+ */
+const DASHBOARD_MIN_HEIGHT = 687;
 
 export function ActiveUserPage() {
   useAppAccess("/admin");
@@ -44,6 +55,9 @@ export function ActiveUserPage() {
   const pageSize = useFixedPageSize({
     overhead: OVERHEAD,
     rowHeight: TABLE_ROW_H,
+    // 대시보드가 사이드에 있어 테이블 컬럼이 stretch 로 최소 DASHBOARD_MIN_HEIGHT
+    // 까지 보장됨 → 뷰포트 기반 계산이 이보다 작을 때 이 값을 사용.
+    minAvailable: DASHBOARD_MIN_HEIGHT - INNER_OVERHEAD,
   });
 
   const fetcher = useCallback(
