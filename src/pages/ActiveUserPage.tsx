@@ -91,6 +91,7 @@ export function ActiveUserPage() {
               borderRadius: theme.radius.md,
               border: `1px solid ${theme.colors.border}`,
               boxShadow: theme.shadow.card,
+              overflow: "hidden",
             }}
           >
             <UserTable

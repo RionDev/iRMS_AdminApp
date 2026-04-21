@@ -69,7 +69,10 @@ export function useDynamicPageSize(
         measuredReserved > 0 ? measuredReserved : reservedHeight;
 
       const available = el.clientHeight - effectiveReserved;
-      const next = Math.max(minSize, Math.floor(available / effectiveRowH));
+      // padding/line-height/border 측정 오차로 한 행이 넘쳐 컨테이너 밖으로
+      // 튀어 나가는 것을 막기 위해 한 행 분의 안전 여유를 둔다.
+      const capacity = Math.floor(available / effectiveRowH) - 1;
+      const next = Math.max(minSize, capacity);
       setSize((prev) => (prev === next ? prev : next));
     };
 
