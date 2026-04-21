@@ -3,24 +3,37 @@ import { Drawer } from "@common/components/Drawer";
 import { Pagination } from "@common/components/Pagination";
 import { TableBlock } from "@common/components/TableBlock";
 import { useAppAccess } from "@common/hooks/useAuth";
-import { useDynamicPageSize } from "@common/hooks/useDynamicPageSize";
+import { LAYOUT, useFixedPageSize } from "@common/hooks/useFixedPageSize";
 import { usePagedNav } from "@common/hooks/usePagedNav";
 import { useThemeStore } from "@common/stores/themeStore";
 import type { VUser } from "@common/types/auth";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useState } from "react";
 import {
   UserSearchBar,
   type UserSearchFilters,
 } from "../components/UserSearchBar";
 import { UserStats } from "../components/UserStats";
-import { UserTable } from "../components/UserTable";
+import {
+  USER_TABLE_ROW_H_COMPACT,
+  USER_TABLE_THEAD_H,
+  UserTable,
+} from "../components/UserTable";
 import { adminNavItems } from "../navigation";
 import { getUsers } from "../services/userService";
 import { UserDetailPage } from "./UserDetailPage";
 
 const ACTIVE_ONLY = ["ACTIVE"];
-const ROW_HEIGHT = 44;
-const RESERVED_HEIGHT = 140;
+/** TableBlock 상하 padding 합 (16*2). compact 모드 page 에서만 이 값. */
+const TABLEBLOCK_PAD_Y = 32;
+const OVERHEAD =
+  LAYOUT.HEADER_H +
+  LAYOUT.FOOTER_H +
+  LAYOUT.MAIN_PAD_Y +
+  LAYOUT.SEARCHBAR_H +
+  LAYOUT.SEARCHBAR_MARGIN +
+  TABLEBLOCK_PAD_Y +
+  USER_TABLE_THEAD_H +
+  LAYOUT.PAGINATION_H;
 
 export function ActiveUserPage() {
   useAppAccess("/admin");
@@ -30,10 +43,9 @@ export function ActiveUserPage() {
   const [reloadKey, setReloadKey] = useState(0);
   const filterKey = JSON.stringify(filters);
 
-  const tableContainerRef = useRef<HTMLDivElement>(null);
-  const pageSize = useDynamicPageSize(tableContainerRef, {
-    rowHeight: ROW_HEIGHT,
-    reservedHeight: RESERVED_HEIGHT,
+  const pageSize = useFixedPageSize({
+    overhead: OVERHEAD,
+    rowHeight: USER_TABLE_ROW_H_COMPACT,
   });
 
   const fetcher = useCallback(
@@ -82,7 +94,7 @@ export function ActiveUserPage() {
           }}
         >
           <UserSearchBar onSearch={setFilters} />
-          <TableBlock ref={tableContainerRef}>
+          <TableBlock>
             <UserTable
               users={nav.items}
               onSelect={setSelectedUser}

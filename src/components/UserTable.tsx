@@ -12,6 +12,13 @@ interface UserTableProps {
   compact?: boolean;
 }
 
+/** compact 모드 row 높이(px). useFixedPageSize 의 rowHeight 와 일치시켜야 한다. */
+export const USER_TABLE_ROW_H_COMPACT = 40;
+/** 일반 모드 row 높이(px). */
+export const USER_TABLE_ROW_H_NORMAL = 44;
+/** thead 높이(px). */
+export const USER_TABLE_THEAD_H = 40;
+
 export function UserTable({
   users,
   onSelect,
@@ -21,8 +28,21 @@ export function UserTable({
 }: UserTableProps) {
   const { theme } = useThemeStore();
   const showActions = Boolean(onApprove);
-  const cellPad = compact ? '12px 20px' : '14px 8px';
+  const cellPadX = compact ? '20px' : '8px';
+  const rowH = compact ? USER_TABLE_ROW_H_COMPACT : USER_TABLE_ROW_H_NORMAL;
   const nowrap = compact ? ('nowrap' as const) : undefined;
+  const thStyle = {
+    padding: `0 ${cellPadX}`,
+    whiteSpace: nowrap,
+    height: `${USER_TABLE_THEAD_H}px`,
+    boxSizing: 'border-box' as const,
+  };
+  const tdStyle = {
+    padding: `0 ${cellPadX}`,
+    whiteSpace: nowrap,
+    height: `${rowH}px`,
+    boxSizing: 'border-box' as const,
+  };
   return (
     <table
       style={{
@@ -34,13 +54,13 @@ export function UserTable({
       }}
     >
       <thead>
-        <tr style={{ borderBottom: `2px solid ${theme.colors.surfaceMuted}` }}>
-          <th style={{ padding: cellPad, whiteSpace: nowrap }}>이름</th>
-          <th style={{ padding: cellPad, whiteSpace: nowrap }}>아이디</th>
-          <th style={{ padding: cellPad, whiteSpace: nowrap }}>팀</th>
-          <th style={{ padding: cellPad, whiteSpace: nowrap }}>역할</th>
-          {showLastAccess && <th style={{ padding: cellPad, whiteSpace: nowrap }}>최근 접속</th>}
-          {showActions && <th style={{ padding: cellPad, whiteSpace: nowrap }}>관리</th>}
+        <tr style={{ borderBottom: `2px solid ${theme.colors.surfaceMuted}`, height: `${USER_TABLE_THEAD_H}px` }}>
+          <th style={thStyle}>이름</th>
+          <th style={thStyle}>아이디</th>
+          <th style={thStyle}>팀</th>
+          <th style={thStyle}>역할</th>
+          {showLastAccess && <th style={thStyle}>최근 접속</th>}
+          {showActions && <th style={thStyle}>관리</th>}
         </tr>
       </thead>
       <tbody>
@@ -51,6 +71,7 @@ export function UserTable({
             style={{
               borderBottom: `1px solid ${theme.colors.surfaceMuted}`,
               cursor: 'pointer',
+              height: `${rowH}px`,
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.backgroundColor = theme.colors.surfaceMuted;
@@ -59,17 +80,17 @@ export function UserTable({
               e.currentTarget.style.backgroundColor = 'transparent';
             }}
           >
-            <td style={{ padding: cellPad, whiteSpace: nowrap }}>{user.name}</td>
-            <td style={{ padding: cellPad, whiteSpace: nowrap }}>{user.id}</td>
-            <td style={{ padding: cellPad, whiteSpace: nowrap }}>{user.team ?? 'N/A'}</td>
-            <td style={{ padding: cellPad, whiteSpace: nowrap }}>{ROLE_LABEL[user.role] ?? user.role}</td>
+            <td style={tdStyle}>{user.name}</td>
+            <td style={tdStyle}>{user.id}</td>
+            <td style={tdStyle}>{user.team ?? 'N/A'}</td>
+            <td style={tdStyle}>{ROLE_LABEL[user.role] ?? user.role}</td>
             {showLastAccess && (
-              <td style={{ padding: cellPad, whiteSpace: nowrap, color: theme.colors.textMuted, fontSize: theme.fontSize.base }}>
+              <td style={{ ...tdStyle, color: theme.colors.textMuted }}>
                 {user.last_at ?? 'N/A'}
               </td>
             )}
             {showActions && (
-              <td style={{ padding: cellPad, display: 'flex', gap: '4px' }}>
+              <td style={{ ...tdStyle, display: 'flex', gap: '4px', alignItems: 'center' }}>
                 {onApprove && user.status === 'PENDING' && (
                   <Button
                     onClick={(e) => {

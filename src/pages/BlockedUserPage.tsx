@@ -3,23 +3,36 @@ import { Drawer } from "@common/components/Drawer";
 import { Pagination } from "@common/components/Pagination";
 import { TableBlock } from "@common/components/TableBlock";
 import { useAppAccess } from "@common/hooks/useAuth";
-import { useDynamicPageSize } from "@common/hooks/useDynamicPageSize";
+import { LAYOUT, useFixedPageSize } from "@common/hooks/useFixedPageSize";
 import { usePagedNav } from "@common/hooks/usePagedNav";
 import { useThemeStore } from "@common/stores/themeStore";
 import type { VUser } from "@common/types/auth";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useState } from "react";
 import {
   UserSearchBar,
   type UserSearchFilters,
 } from "../components/UserSearchBar";
-import { UserTable } from "../components/UserTable";
+import {
+  USER_TABLE_ROW_H_NORMAL,
+  USER_TABLE_THEAD_H,
+  UserTable,
+} from "../components/UserTable";
 import { adminNavItems } from "../navigation";
 import { getUsers } from "../services/userService";
 import { UserDetailPage } from "./UserDetailPage";
 
 const INACTIVE_ONLY = ["INACTIVE"];
-const ROW_HEIGHT = 48;
-const RESERVED_HEIGHT = 160;
+/** TableBlock 상하 padding 합 (24*2). */
+const TABLEBLOCK_PAD_Y = 48;
+const OVERHEAD =
+  LAYOUT.HEADER_H +
+  LAYOUT.FOOTER_H +
+  LAYOUT.MAIN_PAD_Y +
+  LAYOUT.SEARCHBAR_H +
+  LAYOUT.SEARCHBAR_MARGIN +
+  TABLEBLOCK_PAD_Y +
+  USER_TABLE_THEAD_H +
+  LAYOUT.PAGINATION_H;
 
 export function BlockedUserPage() {
   useAppAccess("/admin");
@@ -29,10 +42,9 @@ export function BlockedUserPage() {
   const [reloadKey, setReloadKey] = useState(0);
   const filterKey = JSON.stringify(filters);
 
-  const tableContainerRef = useRef<HTMLDivElement>(null);
-  const pageSize = useDynamicPageSize(tableContainerRef, {
-    rowHeight: ROW_HEIGHT,
-    reservedHeight: RESERVED_HEIGHT,
+  const pageSize = useFixedPageSize({
+    overhead: OVERHEAD,
+    rowHeight: USER_TABLE_ROW_H_NORMAL,
   });
 
   const fetcher = useCallback(
@@ -61,7 +73,7 @@ export function BlockedUserPage() {
       version={__APP_VERSION__}
     >
       <UserSearchBar onSearch={setFilters} />
-      <TableBlock ref={tableContainerRef} padding="24px">
+      <TableBlock padding="24px">
         <UserTable users={nav.items} onSelect={setSelectedUser} />
         {nav.loading && <p>로딩 중...</p>}
         {!nav.loading && nav.items.length === 0 && (
