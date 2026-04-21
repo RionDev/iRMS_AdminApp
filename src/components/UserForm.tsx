@@ -37,14 +37,14 @@ function formatTimestamp(value: string | null): string {
 export function UserForm({ user, onSubmit, onDelete, onCancel }: UserFormProps) {
   const { theme } = useThemeStore();
   const { user: currentUser } = useAuth();
+  const initialTeam = (user.team as TeamType) ?? Team.ENGINE;
+  const initialRole = user.role ?? Role.MEMBER;
+  const initialStatus = (user.status as StatusType) ?? Status.ACTIVE;
+
   const [name, setName] = useState(user.name);
-  const [team, setTeam] = useState<TeamType>(
-    (user.team as TeamType) ?? Team.ENGINE,
-  );
-  const [role, setRole] = useState<RoleType>(user.role ?? Role.MEMBER);
-  const [status, setStatus] = useState<StatusType>(
-    (user.status as StatusType) ?? Status.ACTIVE,
-  );
+  const [team, setTeam] = useState<TeamType>(initialTeam);
+  const [role, setRole] = useState<RoleType>(initialRole);
+  const [status, setStatus] = useState<StatusType>(initialStatus);
   const [blockedReason, setBlockedReason] = useState("");
   const [pwModalOpen, setPwModalOpen] = useState(false);
 
@@ -58,10 +58,16 @@ export function UserForm({ user, onSubmit, onDelete, onCancel }: UserFormProps) 
 
   const isSelf = currentUser?.sub === user.idx;
   const isAdmin = currentUser?.role === Role.ADMIN;
-  const statusChanged = status !== user.status;
+  const statusChanged = status !== initialStatus;
+  const isDirty =
+    name !== user.name ||
+    team !== initialTeam ||
+    role !== initialRole ||
+    statusChanged;
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
+    if (!isDirty) return;
     const payload: UpdateUserRequest = { name, team, role };
     if (statusChanged) {
       payload.status = STATUS_CODE[status];
@@ -91,25 +97,9 @@ export function UserForm({ user, onSubmit, onDelete, onCancel }: UserFormProps) 
     color: theme.colors.text,
   } as const;
 
-  const metaRowStyle = {
-    display: "flex",
-    justifyContent: "space-between",
-    padding: "4px 0",
-    fontSize: theme.fontSize.sm,
-    color: theme.colors.textMuted,
-  } as const;
-
   return (
     <form onSubmit={handleSubmit}>
-      <p
-        style={{
-          color: theme.colors.textMuted,
-          fontSize: theme.fontSize.base,
-          margin: "0 0 16px 0",
-        }}
-      >
-        아이디: {user.id}
-      </p>
+      <Input label="아이디" value={user.id} disabled />
       <Input
         label="이름"
         value={name}
@@ -159,38 +149,18 @@ export function UserForm({ user, onSubmit, onDelete, onCancel }: UserFormProps) 
         </select>
       </div>
       {statusChanged && status === Status.INACTIVE && (
-        <div style={{ marginBottom: "12px" }}>
-          <Input
-            label="차단 사유"
-            value={blockedReason}
-            onChange={(e) => setBlockedReason(e.target.value)}
-            maxLength={100}
-            placeholder="차단 사유를 입력하세요 (최대 100자)"
-          />
-        </div>
+        <Input
+          label="차단 사유"
+          value={blockedReason}
+          onChange={(e) => setBlockedReason(e.target.value)}
+          maxLength={100}
+          placeholder="차단 사유를 입력하세요 (최대 100자)"
+        />
       )}
 
-      <div
-        style={{
-          margin: "16px 0",
-          padding: "12px",
-          borderRadius: theme.radius.sm,
-          backgroundColor: theme.colors.surfaceMuted,
-        }}
-      >
-        <div style={metaRowStyle}>
-          <span>생성 시간</span>
-          <span>{formatTimestamp(user.created_at)}</span>
-        </div>
-        <div style={metaRowStyle}>
-          <span>변경 시간</span>
-          <span>{formatTimestamp(user.updated_at)}</span>
-        </div>
-        <div style={metaRowStyle}>
-          <span>마지막 접속</span>
-          <span>{formatTimestamp(user.last_at)}</span>
-        </div>
-      </div>
+      <Input label="생성 시간" value={formatTimestamp(user.created_at)} disabled />
+      <Input label="변경 시간" value={formatTimestamp(user.updated_at)} disabled />
+      <Input label="마지막 접속" value={formatTimestamp(user.last_at)} disabled />
 
       {isSelf && (
         <Button
@@ -204,7 +174,7 @@ export function UserForm({ user, onSubmit, onDelete, onCancel }: UserFormProps) 
       )}
 
       <div style={{ display: "flex", gap: "8px" }}>
-        <Button type="submit" style={{ flex: 1 }}>
+        <Button type="submit" disabled={!isDirty} style={{ flex: 1 }}>
           저장
         </Button>
         <Button
@@ -215,17 +185,17 @@ export function UserForm({ user, onSubmit, onDelete, onCancel }: UserFormProps) 
         >
           취소
         </Button>
-        {isAdmin && (
-          <Button
-            variant="secondary"
-            type="button"
-            onClick={() => onDelete(user.idx)}
-            style={{ color: theme.colors.danger }}
-          >
-            삭제
-          </Button>
-        )}
       </div>
+      {isAdmin && (
+        <Button
+          variant="secondary"
+          type="button"
+          onClick={() => onDelete(user.idx)}
+          style={{ width: "100%", marginTop: "8px", color: theme.colors.danger }}
+        >
+          삭제
+        </Button>
+      )}
 
       <ChangePasswordModal
         isOpen={pwModalOpen}
