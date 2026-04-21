@@ -184,7 +184,9 @@ export function UserStats({ reloadKey }: UserStatsProps) {
         <div
           style={{
             flex: 1,
-            minHeight: 0,
+            // 이 이하로 줄어들면 도넛이 찌그러지므로 최소 높이를 고정하고,
+            // aside 가 못 버티면 바깥 overflowY:auto 로 스크롤바가 생기게 한다.
+            minHeight: "160px",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
