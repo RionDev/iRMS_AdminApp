@@ -47,13 +47,12 @@ export function ActiveUserPage() {
   });
 
   const fetcher = useCallback(
-    (cursor: string | undefined, snapshotIdx: number | undefined, size: number) =>
-      getUsers(
-        { status: ACTIVE_ONLY, ...filters },
-        cursor,
-        snapshotIdx,
-        size,
-      ),
+    (
+      cursor: string | undefined,
+      snapshotIdx: number | undefined,
+      size: number,
+    ) =>
+      getUsers({ status: ACTIVE_ONLY, ...filters }, cursor, snapshotIdx, size),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [filterKey, reloadKey],
   );
@@ -124,22 +123,13 @@ export function ActiveUserPage() {
             display: "flex",
             flexDirection: "column",
             backgroundColor: theme.colors.surface,
-            padding: "24px",
+            padding: "12px",
             borderRadius: theme.radius.md,
             border: `1px solid ${theme.colors.border}`,
             boxShadow: theme.shadow.card,
+            overflowY: "auto",
           }}
         >
-          <h3
-            style={{
-              margin: 0,
-              marginBottom: "12px",
-              fontSize: theme.fontSize.lg,
-              color: theme.colors.text,
-            }}
-          >
-            대시보드
-          </h3>
           <UserStats reloadKey={reloadKey} />
         </aside>
       </div>
