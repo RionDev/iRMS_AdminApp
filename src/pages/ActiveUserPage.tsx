@@ -96,7 +96,7 @@ export function ActiveUserPage() {
             <UserTable
               users={nav.items}
               onSelect={setSelectedUser}
-              showLastAccess={false}
+              dateColumn="none"
             />
             {nav.loading && <TableEmptyState>로딩 중...</TableEmptyState>}
             {!nav.loading && nav.items.length === 0 && (

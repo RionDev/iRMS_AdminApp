@@ -71,6 +71,7 @@ export function ApprovalPage() {
           users={nav.items}
           onSelect={() => {}}
           onApprove={handleApprove}
+          dateColumn="created_at"
         />
         {nav.loading && <TableEmptyState>로딩 중...</TableEmptyState>}
         {!nav.loading && nav.items.length === 0 && (

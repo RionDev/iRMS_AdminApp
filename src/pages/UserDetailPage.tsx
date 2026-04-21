@@ -4,6 +4,7 @@ import { useThemeStore } from "@common/stores/themeStore";
 import type { VUser } from "@common/types/auth";
 import { useState } from "react";
 import { UserForm } from "../components/UserForm";
+import { BlockReasonPanel } from "../components/BlockReasonPanel";
 import { deleteUser, updateUser } from "../services/userService";
 import type { UpdateUserRequest } from "../types/user";
 
@@ -73,6 +74,7 @@ export function UserDetailPage({ user, onClose, onAfterDelete }: UserDetailPageP
       >
         <Avatar name={user.name} size={80} />
       </div>
+      {user.blocked_reason && <BlockReasonPanel raw={user.blocked_reason} />}
       <UserForm
         user={user}
         onSubmit={handleSubmit}
