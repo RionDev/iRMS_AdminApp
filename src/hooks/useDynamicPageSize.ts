@@ -17,9 +17,10 @@ interface UseDynamicPageSizeOptions {
 /**
  * 컨테이너 높이에 맞춰 한 페이지에 표시할 행 수를 계산한다.
  *
- * 실제 DOM의 thead, tbody 첫 행, 페이지네이션 높이를 측정해
- * 모니터 크기에 따라 테이블이 세로 공백 없이 꽉 차도록 `pageSize`를 동적으로 조정한다.
- * 실측이 어려울 때 props의 `rowHeight` / `reservedHeight` 를 fallback 으로 사용한다.
+ * 마운트 시 1회만 측정한다. 윈도우 리사이즈를 감지해 재계산하면
+ * `usePagedNav` 의 `size` dep 가 바뀌어 리스트/검색/페이지가 리셋되기 때문에
+ * 의도적으로 관찰을 생략했다. 리사이즈 시 약간의 빈 공간 / 클리핑이 생길 수 있지만
+ * 사용자 입장에서 상태가 유지되는 편이 낫다.
  */
 export function useDynamicPageSize(
   containerRef: RefObject<HTMLElement | null>,
@@ -48,13 +49,17 @@ export function useDynamicPageSize(
       const measuredRowH = firstRow?.getBoundingClientRect().height ?? 0;
       const effectiveRowH = measuredRowH > 0 ? measuredRowH : rowHeight;
 
-      // pagination (또는 컨테이너 하단 고정 영역) — 테이블 뒤쪽 형제 전부 합산.
+      // pagination (또는 컨테이너 하단 고정 영역) — 테이블 뒤쪽 형제 합산.
+      // <p> 태그는 로딩/빈 상태 표시용 transient 요소라 제외한다 (데이터 로드 후 사라지므로
+      // 마운트 시점에 포함해서 재면 reserved 가 과대평가되어 pageSize 가 적게 나옴).
       const tableEl = el.querySelector("table");
       let trailingH = 0;
       if (tableEl) {
         let sib = tableEl.nextElementSibling as HTMLElement | null;
         while (sib) {
-          trailingH += sib.getBoundingClientRect().height;
+          if (sib.tagName !== "P") {
+            trailingH += sib.getBoundingClientRect().height;
+          }
           sib = sib.nextElementSibling as HTMLElement | null;
         }
       }
@@ -69,9 +74,22 @@ export function useDynamicPageSize(
     };
 
     compute();
-    const ro = new ResizeObserver(compute);
-    ro.observe(el);
-    return () => ro.disconnect();
+
+    // tbody가 비어있으면 fallback rowHeight 가 쓰여 부정확할 수 있다.
+    // 데이터가 도착해 첫 행이 생기면 한 번 더 재측정한다 (리사이즈 감지 아니므로 이후 리셋 없음).
+    if (!el.querySelector("tbody tr")) {
+      const tbody = el.querySelector("tbody");
+      if (tbody) {
+        const mo = new MutationObserver(() => {
+          if (el.querySelector("tbody tr")) {
+            compute();
+            mo.disconnect();
+          }
+        });
+        mo.observe(tbody, { childList: true });
+        return () => mo.disconnect();
+      }
+    }
   }, [containerRef, rowHeight, reservedHeight, minSize]);
 
   return size;

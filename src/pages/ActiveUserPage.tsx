@@ -66,15 +66,16 @@ export function ActiveUserPage() {
           display: "flex",
           gap: "16px",
           alignItems: "stretch",
-          minHeight: "calc(100vh - 160px)",
+          flex: 1,
+          minHeight: "900px",
         }}
       >
         <div
           style={{
             display: "flex",
             flexDirection: "column",
-            width: "1350px",
-            flexShrink: 0,
+            flex: 1,
+            minWidth: 0,
           }}
         >
           <UserSearchBar onSearch={setFilters} />
@@ -82,6 +83,7 @@ export function ActiveUserPage() {
             ref={tableContainerRef}
             style={{
               flex: 1,
+              minHeight: 0,
               display: "flex",
               flexDirection: "column",
               backgroundColor: theme.colors.surface,
@@ -117,8 +119,9 @@ export function ActiveUserPage() {
         </div>
         <aside
           style={{
-            flex: 1,
-            minWidth: 0,
+            width: "286px",
+            flexShrink: 0,
+            boxSizing: "border-box",
             display: "flex",
             flexDirection: "column",
             backgroundColor: theme.colors.surface,

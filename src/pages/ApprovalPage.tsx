@@ -62,7 +62,8 @@ export function ApprovalPage() {
         style={{
           display: "flex",
           flexDirection: "column",
-          minHeight: "calc(100vh - 220px)",
+          flex: 1,
+          minHeight: 0,
           backgroundColor: theme.colors.surface,
           padding: "24px",
           borderRadius: theme.radius.md,
