@@ -1,7 +1,9 @@
 import { AppLayout } from "@common/components/AppLayout";
 import { Drawer } from "@common/components/Drawer";
 import { Pagination } from "@common/components/Pagination";
+import { TableBlock } from "@common/components/TableBlock";
 import { useAppAccess } from "@common/hooks/useAuth";
+import { useDynamicPageSize } from "@common/hooks/useDynamicPageSize";
 import { usePagedNav } from "@common/hooks/usePagedNav";
 import { useThemeStore } from "@common/stores/themeStore";
 import type { VUser } from "@common/types/auth";
@@ -12,7 +14,6 @@ import {
 } from "../components/UserSearchBar";
 import { UserStats } from "../components/UserStats";
 import { UserTable } from "../components/UserTable";
-import { useDynamicPageSize } from "../hooks/useDynamicPageSize";
 import { adminNavItems } from "../navigation";
 import { getUsers } from "../services/userService";
 import { UserDetailPage } from "./UserDetailPage";
@@ -67,7 +68,9 @@ export function ActiveUserPage() {
           gap: "16px",
           alignItems: "stretch",
           flex: 1,
-          minHeight: "900px",
+          // 27" QHD 에선 900px 을 선호하지만, 24" FHD 처럼 viewport 높이가 부족하면
+          // main 이 스크롤되지 않게 100vh 기준으로 축소한다 (180 = header/footer/padding 합).
+          minHeight: "min(900px, calc(100vh - 180px))",
         }}
       >
         <div
@@ -79,21 +82,7 @@ export function ActiveUserPage() {
           }}
         >
           <UserSearchBar onSearch={setFilters} />
-          <div
-            ref={tableContainerRef}
-            style={{
-              flex: 1,
-              minHeight: 0,
-              display: "flex",
-              flexDirection: "column",
-              backgroundColor: theme.colors.surface,
-              padding: "16px 20px",
-              borderRadius: theme.radius.md,
-              border: `1px solid ${theme.colors.border}`,
-              boxShadow: theme.shadow.card,
-              overflow: "hidden",
-            }}
-          >
+          <TableBlock ref={tableContainerRef}>
             <UserTable
               users={nav.items}
               onSelect={setSelectedUser}
@@ -116,7 +105,7 @@ export function ActiveUserPage() {
                 loading={nav.loading}
               />
             </div>
-          </div>
+          </TableBlock>
         </div>
         <aside
           style={{

@@ -1,6 +1,8 @@
 import { AppLayout } from "@common/components/AppLayout";
 import { Pagination } from "@common/components/Pagination";
+import { TableBlock } from "@common/components/TableBlock";
 import { useAppAccess } from "@common/hooks/useAuth";
+import { useDynamicPageSize } from "@common/hooks/useDynamicPageSize";
 import { usePagedNav } from "@common/hooks/usePagedNav";
 import { useThemeStore } from "@common/stores/themeStore";
 import type { VUser } from "@common/types/auth";
@@ -10,7 +12,6 @@ import {
   type UserSearchFilters,
 } from "../components/UserSearchBar";
 import { UserTable } from "../components/UserTable";
-import { useDynamicPageSize } from "../hooks/useDynamicPageSize";
 import { adminNavItems } from "../navigation";
 import { approveUser, getUsers } from "../services/userService";
 
@@ -57,21 +58,7 @@ export function ApprovalPage() {
       version={__APP_VERSION__}
     >
       <UserSearchBar onSearch={setFilters} />
-      <div
-        ref={tableContainerRef}
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          flex: 1,
-          minHeight: 0,
-          backgroundColor: theme.colors.surface,
-          padding: "24px",
-          borderRadius: theme.radius.md,
-          border: `1px solid ${theme.colors.border}`,
-          boxShadow: theme.shadow.card,
-          overflow: "hidden",
-        }}
-      >
+      <TableBlock ref={tableContainerRef} padding="24px">
         {nav.items.length > 0 && (
           <UserTable
             users={nav.items}
@@ -97,7 +84,7 @@ export function ApprovalPage() {
             loading={nav.loading}
           />
         </div>
-      </div>
+      </TableBlock>
     </AppLayout>
   );
 }

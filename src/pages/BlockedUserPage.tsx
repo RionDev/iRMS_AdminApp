@@ -1,7 +1,9 @@
 import { AppLayout } from "@common/components/AppLayout";
 import { Drawer } from "@common/components/Drawer";
 import { Pagination } from "@common/components/Pagination";
+import { TableBlock } from "@common/components/TableBlock";
 import { useAppAccess } from "@common/hooks/useAuth";
+import { useDynamicPageSize } from "@common/hooks/useDynamicPageSize";
 import { usePagedNav } from "@common/hooks/usePagedNav";
 import { useThemeStore } from "@common/stores/themeStore";
 import type { VUser } from "@common/types/auth";
@@ -11,7 +13,6 @@ import {
   type UserSearchFilters,
 } from "../components/UserSearchBar";
 import { UserTable } from "../components/UserTable";
-import { useDynamicPageSize } from "../hooks/useDynamicPageSize";
 import { adminNavItems } from "../navigation";
 import { getUsers } from "../services/userService";
 import { UserDetailPage } from "./UserDetailPage";
@@ -60,21 +61,7 @@ export function BlockedUserPage() {
       version={__APP_VERSION__}
     >
       <UserSearchBar onSearch={setFilters} />
-      <div
-        ref={tableContainerRef}
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          flex: 1,
-          minHeight: 0,
-          backgroundColor: theme.colors.surface,
-          padding: "24px",
-          borderRadius: theme.radius.md,
-          border: `1px solid ${theme.colors.border}`,
-          boxShadow: theme.shadow.card,
-          overflow: "hidden",
-        }}
-      >
+      <TableBlock ref={tableContainerRef} padding="24px">
         <UserTable users={nav.items} onSelect={setSelectedUser} />
         {nav.loading && <p>로딩 중...</p>}
         {!nav.loading && nav.items.length === 0 && (
@@ -92,7 +79,7 @@ export function BlockedUserPage() {
             loading={nav.loading}
           />
         </div>
-      </div>
+      </TableBlock>
       <Drawer
         isOpen={selectedUser !== null}
         onClose={() => setSelectedUser(null)}
