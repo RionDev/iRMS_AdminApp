@@ -70,13 +70,11 @@ export function ApprovalPage() {
     >
       <UserSearchBar onSearch={setFilters} />
       <TableBlock padding="24px">
-        {nav.items.length > 0 && (
-          <UserTable
-            users={nav.items}
-            onSelect={() => {}}
-            onApprove={handleApprove}
-          />
-        )}
+        <UserTable
+          users={nav.items}
+          onSelect={() => {}}
+          onApprove={handleApprove}
+        />
         {nav.loading && <TableEmptyState>로딩 중...</TableEmptyState>}
         {!nav.loading && nav.items.length === 0 && (
           <TableEmptyState>승인 대기 중인 사용자가 없습니다.</TableEmptyState>
