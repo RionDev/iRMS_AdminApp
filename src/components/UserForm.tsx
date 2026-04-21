@@ -167,15 +167,6 @@ export function UserForm({ user, onSubmit, onDelete, onCancel }: UserFormProps) 
             maxLength={100}
             placeholder="차단 사유를 입력하세요 (최대 100자)"
           />
-          <p
-            style={{
-              margin: "4px 0 0",
-              fontSize: theme.fontSize.sm,
-              color: theme.colors.textMuted,
-            }}
-          >
-            저장 시 `{currentUser?.name ?? ""}:시간:사유` 형식으로 기록됩니다.
-          </p>
         </div>
       )}
 
