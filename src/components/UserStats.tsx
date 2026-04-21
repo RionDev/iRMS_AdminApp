@@ -1,4 +1,5 @@
 import { useThemeStore } from '@common/stores/themeStore';
+import type { Theme } from '@common/styles/theme';
 import { useEffect, useState } from 'react';
 import { getUsers } from '../services/userService';
 
@@ -189,7 +190,7 @@ function DonutChart({
   segments: Segment[];
   centerLabel: number;
   centerSub: string;
-  theme: ReturnType<typeof useThemeStore>['theme'];
+  theme: Theme;
 }) {
   const total = segments.reduce((s, seg) => s + seg.value, 0);
   const radius = 40;
