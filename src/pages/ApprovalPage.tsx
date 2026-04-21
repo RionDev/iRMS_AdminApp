@@ -1,8 +1,5 @@
 import { AppLayout } from "@common/components/AppLayout";
-import {
-  TABLE_ROW_H_NORMAL,
-  TABLE_THEAD_H,
-} from "@common/components/BaseTable";
+import { TABLE_ROW_H, TABLE_THEAD_H } from "@common/components/BaseTable";
 import { Pagination } from "@common/components/Pagination";
 import { TableBlock } from "@common/components/TableBlock";
 import { TableEmptyState } from "@common/components/TableEmptyState";
@@ -39,7 +36,7 @@ export function ApprovalPage() {
 
   const pageSize = useFixedPageSize({
     overhead: OVERHEAD,
-    rowHeight: TABLE_ROW_H_NORMAL,
+    rowHeight: TABLE_ROW_H,
   });
 
   const fetcher = useCallback(

@@ -9,8 +9,6 @@ interface UserTableProps {
   onSelect: (user: VUser) => void;
   onApprove?: (userIdx: number) => void;
   showLastAccess?: boolean;
-  /** 컬럼을 내용 폭에 맞춰 조이고 중앙 정렬한다. 긴 리스트에서 테이블이 과도하게 늘어지지 않도록. */
-  compact?: boolean;
 }
 
 export function UserTable({
@@ -18,7 +16,6 @@ export function UserTable({
   onSelect,
   onApprove,
   showLastAccess = true,
-  compact = false,
 }: UserTableProps) {
   const columns = useMemo<TableColumn<VUser>[]>(() => {
     const cols: TableColumn<VUser>[] = [
@@ -60,7 +57,6 @@ export function UserTable({
       columns={columns}
       onRowClick={onSelect}
       rowKey={(u) => u.idx}
-      compact={compact}
     />
   );
 }
