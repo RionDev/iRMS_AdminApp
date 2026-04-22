@@ -1,4 +1,7 @@
 import type { SidebarItem } from "@common/components/AppLayout";
+import { useAuthStore } from "@common/stores/authStore";
+import { Role } from "@common/types/constants";
+import { useMemo } from "react";
 
 const userIcon = (
   <svg
@@ -82,22 +85,36 @@ const allowIcon = (
   </svg>
 );
 
-export const adminNavItems: SidebarItem[] = [
-  {
-    label: "계정 관리",
-    icon: userIcon,
-    children: [
-      { label: "계정 목록", to: "/users", icon: userIcon },
-      { label: "가입 승인", to: "/approval", icon: approvalIcon },
-      { label: "차단 계정", to: "/blocked", icon: blockedIcon },
-    ],
-  },
-  {
-    label: "앱 관리",
-    icon: appIcon,
-    children: [
-      { label: "앱 허용", to: "/apps", icon: allowIcon },
-      { label: "앱 차단", to: "/apps-blocked", icon: blockedIcon },
-    ],
-  },
-];
+const accountGroup: SidebarItem = {
+  label: "계정 관리",
+  icon: userIcon,
+  children: [
+    { label: "계정 목록", to: "/users", icon: userIcon },
+    { label: "가입 승인", to: "/approval", icon: approvalIcon },
+    { label: "차단 계정", to: "/blocked", icon: blockedIcon },
+  ],
+};
+
+const appGroup: SidebarItem = {
+  label: "앱 관리",
+  icon: appIcon,
+  children: [
+    { label: "앱 허용", to: "/apps", icon: allowIcon },
+    { label: "앱 차단", to: "/apps-blocked", icon: blockedIcon },
+  ],
+};
+
+/**
+ * 현재 로그인 유저 기준 admin 사이드바 메뉴.
+ * 앱 관리 그룹은 app_service 가 Admin 전용이므로 Admin 에게만 노출한다.
+ */
+export function useAdminNavItems(): SidebarItem[] {
+  const user = useAuthStore((s) => s.user);
+  return useMemo(() => {
+    const items: SidebarItem[] = [accountGroup];
+    if (user?.role === Role.ADMIN) {
+      items.push(appGroup);
+    }
+    return items;
+  }, [user?.role]);
+}

@@ -16,7 +16,7 @@ import {
 } from "../components/UserSearchBar";
 import { UserStats } from "../components/UserStats";
 import { UserTable } from "../components/UserTable";
-import { adminNavItems } from "../navigation";
+import { useAdminNavItems } from "../navigation";
 import { getUsers } from "../services/userService";
 import { UserDetailPage } from "./UserDetailPage";
 
@@ -37,6 +37,7 @@ const DASHBOARD_MIN_HEIGHT = 687;
 export function BlockedUserPage() {
   useAppAccess("/admin");
   const { theme } = useThemeStore();
+  const sidebarItems = useAdminNavItems();
   const [filters, setFilters] = useState<UserSearchFilters>({});
   const [selectedUser, setSelectedUser] = useState<VUser | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
@@ -70,7 +71,7 @@ export function BlockedUserPage() {
     <AppLayout
       title="차단 계정"
       appName="관리자 설정"
-      sidebarItems={adminNavItems}
+      sidebarItems={sidebarItems}
       version={__APP_VERSION__}
       contentMaxWidth="1700px"
     >

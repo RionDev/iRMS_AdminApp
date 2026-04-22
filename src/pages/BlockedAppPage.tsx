@@ -1,22 +1,26 @@
 import { AppLayout } from "@common/components/AppLayout";
 import { TABLE_ROW_H, TABLE_THEAD_H } from "@common/components/BaseTable";
+import { Drawer } from "@common/components/Drawer";
 import { Pagination } from "@common/components/Pagination";
 import { TableBlock } from "@common/components/TableBlock";
 import { TableEmptyState } from "@common/components/TableEmptyState";
 import { useAppAccess } from "@common/hooks/useAuth";
 import { LAYOUT, useFixedPageSize } from "@common/hooks/useFixedPageSize";
+import { usePagedNav } from "@common/hooks/usePagedNav";
 import { useAppsStore } from "@common/stores/appsStore";
 import { useThemeStore } from "@common/stores/themeStore";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 import {
   AppSearchBar,
   type AppSearchFilters,
 } from "../components/AppSearchBar";
 import { AppStats } from "../components/AppStats";
 import { AppTable } from "../components/AppTable";
-import { adminNavItems } from "../navigation";
-import { getApps, updateApp } from "../services/appService";
+import { useRequireAdmin } from "../hooks/useRequireAdmin";
+import { useAdminNavItems } from "../navigation";
+import { getApps } from "../services/appService";
 import type { AdminApp } from "../types/app";
+import { AppDetailPage } from "./AppDetailPage";
 
 const TABLEBLOCK_PAD_Y = 32;
 const INNER_OVERHEAD =
@@ -31,12 +35,13 @@ const DASHBOARD_MIN_HEIGHT = 687;
 
 export function BlockedAppPage() {
   useAppAccess("/admin");
+  useRequireAdmin();
   const { theme } = useThemeStore();
-  const [allApps, setAllApps] = useState<AdminApp[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [reloadKey, setReloadKey] = useState(0);
+  const sidebarItems = useAdminNavItems();
   const [filters, setFilters] = useState<AppSearchFilters>({});
-  const [page, setPage] = useState(1);
+  const [reloadKey, setReloadKey] = useState(0);
+  const [selectedApp, setSelectedApp] = useState<AdminApp | null>(null);
+  const filterKey = JSON.stringify(filters);
 
   const pageSize = useFixedPageSize({
     overhead: OVERHEAD,
@@ -44,57 +49,24 @@ export function BlockedAppPage() {
     minAvailable: DASHBOARD_MIN_HEIGHT - INNER_OVERHEAD,
   });
 
-  useEffect(() => {
-    let cancelled = false;
-    setLoading(true);
-    getApps(undefined, undefined, 100)
-      .then((res) => {
-        if (cancelled) return;
-        setAllApps(res.items);
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [reloadKey]);
-
-  const filtered = useMemo(() => {
-    return allApps
-      .filter((a) => a.is_active === 0)
-      .filter((a) => {
-        if (filters.name && !a.name.includes(filters.name)) return false;
-        if (filters.path && !a.path.includes(filters.path)) return false;
-        return true;
-      });
-  }, [allApps, filters]);
-
-  const total = filtered.length;
-  const totalPages = Math.max(1, Math.ceil(total / pageSize));
-  const safePage = Math.min(page, totalPages);
-  const pagedItems = filtered.slice(
-    (safePage - 1) * pageSize,
-    safePage * pageSize,
+  const fetcher = useCallback(
+    (cursor: string | undefined, snapshotIdx: number | undefined, size: number) =>
+      getApps({ is_active: 0, ...filters }, cursor, snapshotIdx, size),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [filterKey, reloadKey],
   );
 
-  const handleSearch = useCallback((next: AppSearchFilters) => {
-    setFilters(next);
-    setPage(1);
-  }, []);
-
-  const handleAllow = useCallback(async (app: AdminApp) => {
-    if (!window.confirm(`'${app.name}' 앱을 허용하시겠습니까?`)) return;
-    await updateApp(app.idx, { is_active: 1 });
-    await useAppsStore.getState().fetchApps();
-    setReloadKey((k) => k + 1);
-  }, []);
+  const nav = usePagedNav<AdminApp>({
+    fetcher,
+    size: pageSize,
+    deps: [filterKey, reloadKey],
+  });
 
   return (
     <AppLayout
       title="앱 차단 목록"
       appName="관리자 설정"
-      sidebarItems={adminNavItems}
+      sidebarItems={sidebarItems}
       version={__APP_VERSION__}
       contentMaxWidth="1700px"
     >
@@ -115,28 +87,23 @@ export function BlockedAppPage() {
             minWidth: 0,
           }}
         >
-          <AppSearchBar onSearch={handleSearch} />
+          <AppSearchBar onSearch={setFilters} />
           <TableBlock>
-            <AppTable
-              apps={pagedItems}
-              actionLabel="허용"
-              actionVariant="primary"
-              onAction={handleAllow}
-            />
-            {loading && <TableEmptyState>로딩 중...</TableEmptyState>}
-            {!loading && pagedItems.length === 0 && (
+            <AppTable apps={nav.items} onSelect={setSelectedApp} />
+            {nav.loading && <TableEmptyState>로딩 중...</TableEmptyState>}
+            {!nav.loading && nav.items.length === 0 && (
               <TableEmptyState>차단된 앱이 없습니다.</TableEmptyState>
             )}
             <div style={{ marginTop: "auto" }}>
               <Pagination
-                page={safePage}
-                totalPages={totalPages}
-                total={total}
-                hasPrev={safePage > 1}
-                hasNext={safePage < totalPages}
-                onPrev={() => setPage((p) => Math.max(1, p - 1))}
-                onNext={() => setPage((p) => Math.min(totalPages, p + 1))}
-                loading={loading}
+                page={nav.page}
+                totalPages={nav.totalPages}
+                total={nav.total}
+                hasPrev={nav.hasPrev}
+                hasNext={nav.hasNext}
+                onPrev={nav.prev}
+                onNext={nav.next}
+                loading={nav.loading}
               />
             </div>
           </TableBlock>
@@ -158,6 +125,25 @@ export function BlockedAppPage() {
           <AppStats reloadKey={reloadKey} />
         </aside>
       </div>
+      <Drawer
+        isOpen={selectedApp !== null}
+        onClose={() => setSelectedApp(null)}
+      >
+        {selectedApp && (
+          <AppDetailPage
+            app={selectedApp}
+            onClose={() => setSelectedApp(null)}
+            onAfterUpdate={async () => {
+              await useAppsStore.getState().fetchApps();
+              setReloadKey((k) => k + 1);
+            }}
+            onAfterDelete={async () => {
+              await useAppsStore.getState().fetchApps();
+              setReloadKey((k) => k + 1);
+            }}
+          />
+        )}
+      </Drawer>
     </AppLayout>
   );
 }

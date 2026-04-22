@@ -15,7 +15,7 @@ import {
 } from "../components/UserSearchBar";
 import { UserStats } from "../components/UserStats";
 import { UserTable } from "../components/UserTable";
-import { adminNavItems } from "../navigation";
+import { useAdminNavItems } from "../navigation";
 import { approveUser, getUsers } from "../services/userService";
 
 const PENDING_ONLY = ["PENDING"];
@@ -35,6 +35,7 @@ const DASHBOARD_MIN_HEIGHT = 687;
 export function ApprovalPage() {
   useAppAccess("/admin");
   const { theme } = useThemeStore();
+  const sidebarItems = useAdminNavItems();
   const [filters, setFilters] = useState<UserSearchFilters>({});
   const [reloadKey, setReloadKey] = useState(0);
   const filterKey = JSON.stringify(filters);
@@ -72,7 +73,7 @@ export function ApprovalPage() {
     <AppLayout
       title="가입 승인"
       appName="관리자 설정"
-      sidebarItems={adminNavItems}
+      sidebarItems={sidebarItems}
       version={__APP_VERSION__}
       contentMaxWidth="1700px"
     >
