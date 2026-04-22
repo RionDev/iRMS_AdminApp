@@ -1,19 +1,17 @@
 import { useThemeStore } from "@common/stores/themeStore";
 import type { Theme } from "@common/styles/theme";
 import { useEffect, useState, type ReactNode } from "react";
-import { getUserStatistics } from "../services/userService";
+import { getAppStatistics } from "../services/appService";
 
-/** 도넛 차트 영역의 최소 높이 (px). 이보다 세로 공간이 부족해지면
- *  대시보드 aside 의 min-content 가 이 만큼 커지고, 그에 맞춰 flex container /
- *  테이블 컬럼도 stretch 된다 (ActiveUserPage.DASHBOARD_MIN_HEIGHT 와 연동). */
+/** 도넛 차트 영역의 최소 높이 (px). ActiveAppPage.DASHBOARD_MIN_HEIGHT 와 연동. */
 const CHART_MIN_HEIGHT = 160;
 
-interface UserStatsProps {
-  /** 값이 바뀌면 통계를 다시 가져온다 (예: 계정 삭제/상태 변경 후). */
+interface AppStatsProps {
+  /** 값이 바뀌면 통계를 다시 가져온다 (예: 허용/차단 토글 후). */
   reloadKey?: number;
 }
 
-type SegmentKey = "active" | "pending" | "blocked";
+type SegmentKey = "active" | "blocked";
 
 interface Segment {
   key: SegmentKey;
@@ -25,24 +23,22 @@ interface Segment {
   icon: ReactNode;
 }
 
-export function UserStats({ reloadKey }: UserStatsProps) {
+export function AppStats({ reloadKey }: AppStatsProps) {
   const { theme, isDarkMode } = useThemeStore();
   const [total, setTotal] = useState<number | null>(null);
   const [active, setActive] = useState<number | null>(null);
-  const [pending, setPending] = useState<number | null>(null);
   const [blocked, setBlocked] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     let mounted = true;
     setError(null);
-    getUserStatistics()
+    getAppStatistics()
       .then((stats) => {
         if (!mounted) return;
         setTotal(stats.total);
         setActive(stats.active);
-        setPending(stats.pending);
-        setBlocked(stats.inactive);
+        setBlocked(stats.blocked);
       })
       .catch(() => {
         if (!mounted) return;
@@ -58,25 +54,16 @@ export function UserStats({ reloadKey }: UserStatsProps) {
     {
       key: "active",
       label: "활성",
-      description: "정상적으로 사용 중인 계정",
+      description: "허용된 앱",
       value: active ?? 0,
       color: theme.colors.primary,
-      tint: "${rgba(37, 99, 235, 0.12)}",
-      icon: <PersonIcon />,
-    },
-    {
-      key: "pending",
-      label: "승인 대기",
-      description: "승인을 기다리는 계정",
-      value: pending ?? 0,
-      color: theme.colors.warning,
-      tint: "rgba(245, 158, 11, 0.16)",
-      icon: <ClockIcon />,
+      tint: "rgba(37, 99, 235, 0.12)",
+      icon: <GridIcon />,
     },
     {
       key: "blocked",
-      label: "차단",
-      description: "접근이 차단된 계정",
+      label: "비활성",
+      description: "차단된 앱",
       value: blocked ?? 0,
       color: theme.colors.danger,
       tint: "rgba(220, 38, 38, 0.12)",
@@ -84,10 +71,6 @@ export function UserStats({ reloadKey }: UserStatsProps) {
     },
   ];
 
-  // 바깥 aside 는 surface 색인데, 내부 박스는 한 톤 다른 색으로 구분:
-  //   light: 옅은 파랑(#eef2fb)
-  //   dark:  pageBackground(slate-900) — surfaceMuted는 theme.colors.border 와
-  //          같은 #334155 라 구분선이 묻히므로 한 단계 더 어두운 색 사용
   const innerBoxBg = isDarkMode ? theme.colors.pageBackground : "#eef2fb";
   const innerBoxStyle = {
     backgroundColor: innerBoxBg,
@@ -108,7 +91,7 @@ export function UserStats({ reloadKey }: UserStatsProps) {
         minHeight: 0,
       }}
     >
-      {/* 전체 계정 (그라디언트 카드) */}
+      {/* 전체 앱 (그라디언트 카드) */}
       <div
         style={{
           position: "relative",
@@ -121,9 +104,7 @@ export function UserStats({ reloadKey }: UserStatsProps) {
           flexShrink: 0,
         }}
       >
-        <div style={{ fontSize: theme.fontSize.lg, opacity: 0.9 }}>
-          전체 계정
-        </div>
+        <div style={{ fontSize: theme.fontSize.lg, opacity: 0.9 }}>전체 앱</div>
         <div
           style={{
             fontSize: "42px",
@@ -151,11 +132,11 @@ export function UserStats({ reloadKey }: UserStatsProps) {
             justifyContent: "center",
           }}
         >
-          <PeopleIcon />
+          <BigGridIcon />
         </div>
       </div>
 
-      {/* 계정 상태 분포 (도넛 + 범례) */}
+      {/* 앱 상태 분포 (도넛 + 범례) */}
       <div
         style={{
           ...innerBoxStyle,
@@ -176,15 +157,11 @@ export function UserStats({ reloadKey }: UserStatsProps) {
             flexShrink: 0,
           }}
         >
-          계정 상태 분포
+          앱 상태 분포
         </h4>
         <div
           style={{
             flex: 1,
-            // 차트 최소 높이 고정. 이 값이 dashboard aside 의 min-content 를
-            // 끌어올리고, flex container alignItems:stretch 를 통해 테이블 컬럼도
-            // 같이 보장됨. ActiveUserPage.DASHBOARD_MIN_HEIGHT 에 반영해 table
-            // row 수도 맞춰 계산한다.
             minHeight: `${CHART_MIN_HEIGHT}px`,
             display: "flex",
             justifyContent: "center",
@@ -361,8 +338,6 @@ function DonutChart({
         viewBox="0 0 100 100"
         preserveAspectRatio="xMidYMid meet"
         style={{
-          // 흐름에서 빼서 intrinsic viewBox 크기가 flex min-content 로
-          // 올라가지 않게 한다. 컨테이너가 0 까지 자유롭게 줄어들 수 있다.
           position: "absolute",
           inset: 0,
           width: "100%",
@@ -436,7 +411,7 @@ function DonutChart({
 
 // ──── 인라인 아이콘 ────
 
-function PeopleIcon() {
+function BigGridIcon() {
   return (
     <svg
       width="40"
@@ -449,16 +424,15 @@ function PeopleIcon() {
       strokeLinejoin="round"
       aria-hidden
     >
-      <path d="M17 21v-2a4 4 0 0 0-3-3.87" />
-      <path d="M21 21v-2a4 4 0 0 0-3-3.87" />
-      <circle cx="9" cy="7" r="4" />
-      <path d="M15 11a4 4 0 0 0 0-8" />
-      <path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2" />
+      <rect x="3" y="3" width="7" height="7" />
+      <rect x="14" y="3" width="7" height="7" />
+      <rect x="14" y="14" width="7" height="7" />
+      <rect x="3" y="14" width="7" height="7" />
     </svg>
   );
 }
 
-function PersonIcon() {
+function GridIcon() {
   return (
     <svg
       width="20"
@@ -471,27 +445,10 @@ function PersonIcon() {
       strokeLinejoin="round"
       aria-hidden
     >
-      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-      <circle cx="12" cy="7" r="4" />
-    </svg>
-  );
-}
-
-function ClockIcon() {
-  return (
-    <svg
-      width="20"
-      height="20"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden
-    >
-      <circle cx="12" cy="12" r="9" />
-      <polyline points="12 7 12 12 15 14" />
+      <rect x="3" y="3" width="7" height="7" />
+      <rect x="14" y="3" width="7" height="7" />
+      <rect x="14" y="14" width="7" height="7" />
+      <rect x="3" y="14" width="7" height="7" />
     </svg>
   );
 }

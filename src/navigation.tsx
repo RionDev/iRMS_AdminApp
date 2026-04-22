@@ -49,6 +49,39 @@ const blockedIcon = (
   </svg>
 );
 
+const appIcon = (
+  <svg
+    width="18"
+    height="18"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <rect x="3" y="3" width="7" height="7" />
+    <rect x="14" y="3" width="7" height="7" />
+    <rect x="14" y="14" width="7" height="7" />
+    <rect x="3" y="14" width="7" height="7" />
+  </svg>
+);
+
+const allowIcon = (
+  <svg
+    width="18"
+    height="18"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <polyline points="20 6 9 17 4 12" />
+  </svg>
+);
+
 export const adminNavItems: SidebarItem[] = [
   {
     label: "계정 관리",
@@ -57,6 +90,14 @@ export const adminNavItems: SidebarItem[] = [
       { label: "계정 목록", to: "/users", icon: userIcon },
       { label: "가입 승인", to: "/approval", icon: approvalIcon },
       { label: "차단 계정", to: "/blocked", icon: blockedIcon },
+    ],
+  },
+  {
+    label: "앱 관리",
+    icon: appIcon,
+    children: [
+      { label: "앱 허용", to: "/apps", icon: allowIcon },
+      { label: "앱 차단", to: "/apps-blocked", icon: blockedIcon },
     ],
   },
 ];

@@ -22,6 +22,8 @@ export function App() {
       <Route path="/users" element={<RequireAuth>{adminRoutes.userList}</RequireAuth>} />
       <Route path="/approval" element={<RequireAuth>{adminRoutes.approval}</RequireAuth>} />
       <Route path="/blocked" element={<RequireAuth>{adminRoutes.blockedList}</RequireAuth>} />
+      <Route path="/apps" element={<RequireAuth>{adminRoutes.appList}</RequireAuth>} />
+      <Route path="/apps-blocked" element={<RequireAuth>{adminRoutes.blockedAppList}</RequireAuth>} />
       <Route path="*" element={<Navigate to="/users" replace />} />
     </Routes>
   );

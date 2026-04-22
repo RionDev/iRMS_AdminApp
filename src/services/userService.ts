@@ -58,3 +58,15 @@ export async function updateUser(idx: number, data: UpdateUserRequest): Promise<
 export async function deleteUser(idx: number): Promise<void> {
   await apiClient.delete(`/api/user/users/${idx}`);
 }
+
+export interface UserStatistics {
+  total: number;
+  pending: number;
+  active: number;
+  inactive: number;
+}
+
+export async function getUserStatistics(): Promise<UserStatistics> {
+  const res = await apiClient.get<UserStatistics>('/api/user/statistics');
+  return res.data;
+}
