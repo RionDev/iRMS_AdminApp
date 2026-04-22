@@ -1,5 +1,6 @@
 import { AppLayout } from "@common/components/AppLayout";
 import { TABLE_ROW_H, TABLE_THEAD_H } from "@common/components/BaseTable";
+import { Button } from "@common/components/Button";
 import { Drawer } from "@common/components/Drawer";
 import { Pagination } from "@common/components/Pagination";
 import { TableBlock } from "@common/components/TableBlock";
@@ -10,6 +11,7 @@ import { usePagedNav } from "@common/hooks/usePagedNav";
 import { useAppsStore } from "@common/stores/appsStore";
 import { useThemeStore } from "@common/stores/themeStore";
 import { useCallback, useState } from "react";
+import { AppCreateModal } from "../components/AppCreateModal";
 import {
   AppSearchBar,
   type AppSearchFilters,
@@ -23,7 +25,10 @@ import type { AdminApp } from "../types/app";
 import { AppDetailPage } from "./AppDetailPage";
 
 const TABLEBLOCK_PAD_Y = 32;
+/** 앱 등록 버튼 툴바 높이(버튼 32 + 하단 margin 8). */
+const TOOLBAR_H = 40;
 const INNER_OVERHEAD =
+  TOOLBAR_H +
   LAYOUT.SEARCHBAR_H +
   LAYOUT.SEARCHBAR_MARGIN +
   TABLEBLOCK_PAD_Y +
@@ -41,6 +46,7 @@ export function ActiveAppPage() {
   const [filters, setFilters] = useState<AppSearchFilters>({});
   const [reloadKey, setReloadKey] = useState(0);
   const [selectedApp, setSelectedApp] = useState<AdminApp | null>(null);
+  const [createOpen, setCreateOpen] = useState(false);
   const filterKey = JSON.stringify(filters);
 
   const pageSize = useFixedPageSize({
@@ -87,6 +93,19 @@ export function ActiveAppPage() {
             minWidth: 0,
           }}
         >
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              marginBottom: "8px",
+              height: "32px",
+              flexShrink: 0,
+            }}
+          >
+            <Button type="button" onClick={() => setCreateOpen(true)}>
+              + 앱 등록
+            </Button>
+          </div>
           <AppSearchBar onSearch={setFilters} />
           <TableBlock>
             <AppTable apps={nav.items} onSelect={setSelectedApp} />
@@ -125,6 +144,14 @@ export function ActiveAppPage() {
           <AppStats reloadKey={reloadKey} />
         </aside>
       </div>
+      <AppCreateModal
+        isOpen={createOpen}
+        onClose={() => setCreateOpen(false)}
+        onCreated={async () => {
+          await useAppsStore.getState().fetchApps();
+          setReloadKey((k) => k + 1);
+        }}
+      />
       <Drawer
         isOpen={selectedApp !== null}
         onClose={() => setSelectedApp(null)}

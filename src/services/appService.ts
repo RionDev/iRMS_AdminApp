@@ -1,6 +1,13 @@
 import apiClient from "@common/services/apiClient";
 import type { Page } from "@common/types/pagination";
-import type { AdminApp, UpdateAppRequest } from "../types/app";
+import type { AdminApp, AppTeam, UpdateAppRequest } from "../types/app";
+
+export interface CreateAppRequest {
+  path: string;
+  name: string;
+  min_role?: number;
+  team?: AppTeam;
+}
 
 export interface AppStatistics {
   total: number;
@@ -45,6 +52,11 @@ export async function getApps(
 export async function getAppStatistics(): Promise<AppStatistics> {
   const res = await apiClient.get<AppStatistics>("/api/app/statistics");
   return res.data;
+}
+
+export async function createApp(data: CreateAppRequest): Promise<AdminApp> {
+  const res = await apiClient.post<{ app: AdminApp }>("/api/app/apps", data);
+  return res.data.app;
 }
 
 export async function updateApp(
