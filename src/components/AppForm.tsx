@@ -27,6 +27,12 @@ const ACTIVE_OPTIONS: ReadonlyArray<{ value: string; label: string }> = [
   { value: "0", label: "비활성" },
 ];
 
+/** api_key_enabled select options. 1:허용, 0:불허 */
+const API_KEY_OPTIONS: ReadonlyArray<{ value: string; label: string }> = [
+  { value: "0", label: "불허" },
+  { value: "1", label: "허용" },
+];
+
 export function AppForm({ app, onSubmit, onDelete }: AppFormProps) {
   const { theme } = useThemeStore();
   const { user: currentUser } = useAuth();
@@ -34,17 +40,20 @@ export function AppForm({ app, onSubmit, onDelete }: AppFormProps) {
   const initialMinRole = String(app.min_role);
   const initialTeam: AppTeam = app.team;
   const initialActive = String(app.is_active);
+  const initialApiKey = String(app.api_key_enabled);
 
   const [name, setName] = useState(app.name);
   const [minRole, setMinRole] = useState<string>(initialMinRole);
   const [team, setTeam] = useState<AppTeam>(initialTeam);
   const [isActive, setIsActive] = useState<string>(initialActive);
+  const [apiKeyEnabled, setApiKeyEnabled] = useState<string>(initialApiKey);
 
   useEffect(() => {
     setName(app.name);
     setMinRole(String(app.min_role));
     setTeam(app.team);
     setIsActive(String(app.is_active));
+    setApiKeyEnabled(String(app.api_key_enabled));
   }, [app]);
 
   const isAdmin = currentUser?.role === Role.ADMIN;
@@ -52,7 +61,8 @@ export function AppForm({ app, onSubmit, onDelete }: AppFormProps) {
     name !== app.name ||
     minRole !== initialMinRole ||
     team !== initialTeam ||
-    isActive !== initialActive;
+    isActive !== initialActive ||
+    apiKeyEnabled !== initialApiKey;
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -62,6 +72,7 @@ export function AppForm({ app, onSubmit, onDelete }: AppFormProps) {
       min_role: Number(minRole),
       team,
       is_active: Number(isActive),
+      api_key_enabled: Number(apiKeyEnabled),
     };
     onSubmit(app.idx, payload);
   };
@@ -134,6 +145,24 @@ export function AppForm({ app, onSubmit, onDelete }: AppFormProps) {
             </option>
           ))}
         </select>
+      </div>
+
+      <div style={{ marginBottom: "12px" }}>
+        <label style={labelStyle}>API 키 허용</label>
+        <select
+          value={apiKeyEnabled}
+          onChange={(e) => setApiKeyEnabled(e.target.value)}
+          style={selectStyle}
+        >
+          {API_KEY_OPTIONS.map((opt) => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
+        </select>
+        <p style={{ margin: "4px 0 0", fontSize: theme.fontSize.sm, color: theme.colors.textMuted }}>
+          허용하면 사용자가 이 앱을 API 키의 범위로 고를 수 있습니다. 불허로 바꾸면 이미 만든 키도 이 앱에서는 바로 막힙니다.
+        </p>
       </div>
 
       <Button type="submit" disabled={!isDirty} style={{ width: "100%" }}>

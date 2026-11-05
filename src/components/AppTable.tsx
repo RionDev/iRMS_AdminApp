@@ -32,6 +32,11 @@ export function AppTable({ apps, onSelect }: AppTableProps) {
         render: (a) =>
           a.team === TEAM_FULL ? "전체" : TEAM_LABEL[a.team as TeamType],
       },
+      {
+        key: "api_key_enabled",
+        label: "API 키",
+        render: (a) => (a.api_key_enabled ? "허용" : "-"),
+      },
     ],
     [],
   );

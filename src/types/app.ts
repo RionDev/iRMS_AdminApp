@@ -17,6 +17,8 @@ export interface AdminApp {
   team: AppTeam;
   /** 1:활성(허용), 0:비활성(차단) */
   is_active: number;
+  /** 1:사용자 API 키로 호출 허용, 0:불허 */
+  api_key_enabled: number;
 }
 
 /** 앱 수정 요청 (부분 업데이트; 생략 시 변경 없음) */
@@ -25,4 +27,5 @@ export interface UpdateAppRequest {
   min_role?: number;
   team?: AppTeam;
   is_active?: number;
+  api_key_enabled?: number;
 }
