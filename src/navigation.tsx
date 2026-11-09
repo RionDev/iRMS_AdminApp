@@ -1,7 +1,7 @@
 import type { SidebarItem } from "@common/components/AppLayout";
-import { useAuthStore } from "@common/stores/authStore";
-import { Role } from "@common/types/constants";
+import { useFeatures } from "@common/hooks/useFeatures";
 import { useMemo } from "react";
+import { AdminFeature, ADMIN_APP } from "./features";
 
 const userIcon = (
   <svg
@@ -85,36 +85,34 @@ const allowIcon = (
   </svg>
 );
 
-const accountGroup: SidebarItem = {
-  label: "계정 관리",
-  icon: userIcon,
-  children: [
-    { label: "계정 목록", to: "/users", icon: userIcon },
-    { label: "가입 승인", to: "/approval", icon: approvalIcon },
-    { label: "차단 계정", to: "/blocked", icon: blockedIcon },
-  ],
-};
-
-const appGroup: SidebarItem = {
-  label: "앱 관리",
-  icon: appIcon,
-  children: [
-    { label: "앱 허용", to: "/apps", icon: allowIcon },
-    { label: "앱 차단", to: "/apps-blocked", icon: blockedIcon },
-  ],
-};
-
 /**
  * 현재 로그인 유저 기준 admin 사이드바 메뉴.
- * 앱 관리 그룹은 app_service 가 Admin 전용이므로 Admin 에게만 노출한다.
+ * 메뉴마다 BE 기능 권한(admin 앱 → 앱 상세 → 기능 권한)을 따른다. 쓸 수 없는 메뉴는 숨긴다.
  */
 export function useAdminNavItems(): SidebarItem[] {
-  const user = useAuthStore((s) => s.user);
+  const { can } = useFeatures(ADMIN_APP);
   return useMemo(() => {
-    const items: SidebarItem[] = [accountGroup];
-    if (user?.role === Role.ADMIN) {
-      items.push(appGroup);
+    const items: SidebarItem[] = [];
+
+    const accountChildren = [
+      can(AdminFeature.USER_VIEW) && { label: "계정 목록", to: "/users", icon: userIcon },
+      can(AdminFeature.USER_APPROVE) && { label: "가입 승인", to: "/approval", icon: approvalIcon },
+      can(AdminFeature.USER_VIEW) && { label: "차단 계정", to: "/blocked", icon: blockedIcon },
+    ].filter((c): c is { label: string; to: string; icon: JSX.Element } => Boolean(c));
+    if (accountChildren.length > 0) {
+      items.push({ label: "계정 관리", icon: userIcon, children: accountChildren });
+    }
+
+    if (can(AdminFeature.APP_MANAGE)) {
+      items.push({
+        label: "앱 관리",
+        icon: appIcon,
+        children: [
+          { label: "앱 허용", to: "/apps", icon: allowIcon },
+          { label: "앱 차단", to: "/apps-blocked", icon: blockedIcon },
+        ],
+      });
     }
     return items;
-  }, [user?.role]);
+  }, [can]);
 }

@@ -21,6 +21,8 @@
 ## 고유 규칙
 
 - 모든 페이지에 `useAppAccess("/admin")` 적용 — `apps` 테이블의 `/admin` 레코드 `min_role` 기준으로 접근 제어
+- 메뉴·버튼은 기능 권한(`useFeatures("/admin")`, 키는 `src/features.ts`)으로 숨긴다 — 역할을 코드에 고정하지 않는다.
+  `user_view`(계정 목록·차단 계정), `user_approve`(가입 승인), `user_manage`(계정 저장·삭제), `app_manage`(앱 관리). 실제 차단은 BE
 - BE `user-service` (포트 8005) 엔드포인트만 대응
 - 독립 실행 시 Vite dev server 포트 3002 사용
 

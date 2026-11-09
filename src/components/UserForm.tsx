@@ -2,6 +2,7 @@ import { Button } from "@common/components/Button";
 import { ChangePasswordModal } from "@common/components/AppLayout";
 import { Input } from "@common/components/Input";
 import { useAuth } from "@common/hooks/useAuth";
+import { useFeatures } from "@common/hooks/useFeatures";
 import { useThemeStore } from "@common/stores/themeStore";
 import type { VUser } from "@common/types/auth";
 import {
@@ -18,6 +19,7 @@ import {
 } from "@common/types/constants";
 import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
+import { AdminFeature, ADMIN_APP } from "../features";
 import type { UpdateUserRequest } from "../types/user";
 
 interface UserFormProps {
@@ -57,6 +59,8 @@ export function UserForm({ user, onSubmit, onDelete }: UserFormProps) {
 
   const isSelf = currentUser?.sub === user.idx;
   const isAdmin = currentUser?.role === Role.ADMIN;
+  // 계정 수정·삭제 기능 권한 (admin 앱 → 앱 상세 → 기능 권한). 없으면 저장·삭제를 숨긴다
+  const canManage = useFeatures(ADMIN_APP).can(AdminFeature.USER_MANAGE);
   const statusChanged = status !== initialStatus;
   const isDirty =
     name !== user.name ||
@@ -172,14 +176,16 @@ export function UserForm({ user, onSubmit, onDelete }: UserFormProps) {
         </Button>
       )}
 
-      <Button
-        type="submit"
-        disabled={!isDirty}
-        style={{ width: "100%" }}
-      >
-        저장
-      </Button>
-      {isAdmin && (
+      {canManage && (
+        <Button
+          type="submit"
+          disabled={!isDirty}
+          style={{ width: "100%" }}
+        >
+          저장
+        </Button>
+      )}
+      {isAdmin && canManage && (
         <Button
           variant="secondary"
           type="button"
