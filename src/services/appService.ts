@@ -1,6 +1,12 @@
 import apiClient from "@common/services/apiClient";
 import type { Page } from "@common/types/pagination";
-import type { AdminApp, AppTeam, UpdateAppRequest } from "../types/app";
+import type {
+  AdminApp,
+  AppFeature,
+  AppTeam,
+  UpdateAppRequest,
+  UpdateFeatureRequest,
+} from "../types/app";
 
 export interface CreateAppRequest {
   path: string;
@@ -68,4 +74,24 @@ export async function updateApp(
 
 export async function deleteApp(idx: number): Promise<void> {
   await apiClient.delete(`/api/app/apps/${idx}`);
+}
+
+/** 앱 기능 권한 목록 (등록 순) */
+export async function getAppFeatures(appIdx: number): Promise<AppFeature[]> {
+  const res = await apiClient.get<{ features: AppFeature[] }>(
+    `/api/app/apps/${appIdx}/features`,
+  );
+  return res.data.features;
+}
+
+/** 기능 권한(최소 등급·허용 팀) 수정 */
+export async function updateAppFeature(
+  featureIdx: number,
+  data: UpdateFeatureRequest,
+): Promise<AppFeature> {
+  const res = await apiClient.put<{ feature: AppFeature }>(
+    `/api/app/features/${featureIdx}`,
+    data,
+  );
+  return res.data.feature;
 }

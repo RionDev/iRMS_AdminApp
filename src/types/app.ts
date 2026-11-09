@@ -29,3 +29,23 @@ export interface UpdateAppRequest {
   is_active?: number;
   api_key_enabled?: number;
 }
+
+/** 앱 안의 기능(API 묶음)별 권한 (BE AppFeatureResponse 대응). 기능 키·이름은 BE 코드가 정한다. */
+export interface AppFeature {
+  idx: number;
+  app_path: string;
+  /** 코드에서 쓰는 기능 키 (예: search) */
+  feature_key: string;
+  /** 표시 이름 (예: 샘플 검색) */
+  name: string;
+  /** 최소 허용 등급 idx (1:ADMIN, 2:LEAD, 3:MEMBER, 4:GUEST=전체) */
+  min_role: number;
+  /** 허용 팀 (ENGINE, ANALYST, FULL=전체) */
+  team: AppTeam;
+}
+
+/** 기능 권한 수정 요청 (부분 업데이트) */
+export interface UpdateFeatureRequest {
+  min_role?: number;
+  team?: AppTeam;
+}

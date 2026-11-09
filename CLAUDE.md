@@ -42,3 +42,5 @@
 | `getUsers`    | `/api/user/users`      | GET    | Lead/Admin | `service.py → get_users`     |
 | `updateUser`  | `/api/user/users/:idx` | PUT    | Lead/Admin | `service.py → update_user`   |
 | `deleteUser`  | `/api/user/users/:idx` | DELETE | Lead/Admin | `service.py → delete_user`   |
+| `getAppFeatures`   | `/api/app/apps/:idx/features` | GET | Admin | app-service `list_app_features` — 앱 상세 "기능 권한" |
+| `updateAppFeature` | `/api/app/features/:idx`      | PUT | Admin | app-service `update_feature` — 최소 등급·허용 팀만 |

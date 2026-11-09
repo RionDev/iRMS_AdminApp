@@ -1,6 +1,7 @@
 import { Button } from "@common/components/Button";
 import { useThemeStore } from "@common/stores/themeStore";
 import { useState } from "react";
+import { AppFeatureList } from "../components/AppFeatureList";
 import { AppForm } from "../components/AppForm";
 import { deleteApp, updateApp } from "../services/appService";
 import type { AdminApp, UpdateAppRequest } from "../types/app";
@@ -75,6 +76,7 @@ export function AppDetailPage({
           {message}
         </p>
       )}
+      <AppFeatureList appIdx={app.idx} />
     </div>
   );
 }
